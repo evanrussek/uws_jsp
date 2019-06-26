@@ -18,6 +18,94 @@
   <body></body>
   <script>
 
+
+    // helper function
+    function normal_random(mean, variance) {
+        if (mean === undefined)
+        mean = 0.0;
+        if (variance === undefined)
+        variance = 1.0;
+        var V1, V2, S;
+        do {
+        var U1 = Math.random();
+        var U2 = Math.random();
+        V1 = 2 * U1 - 1;
+        V2 = 2 * U2 - 1;
+        S = V1 * V1 + V2 * V2;
+        } while (S > 1);
+
+        X = Math.sqrt(-2 * Math.log(S) / S) * V1;
+        //Y = Math.sqrt(-2 * Math.log(S) / S) * V2;
+        X = mean + Math.sqrt(variance) * X;
+        //Y = mean + Math.sqrt(variance) * Y ;
+        return X;
+    }
+
+
+// need to pre_generate random numbers...
+
+
+  // make trial parameters
+  var all_win_safe_vals = [16, 32];
+  var all_loss_safe_vals = [-16, -32];
+  var all_win_amounts = [35, 51, 67, 84, 99];
+  var all_loss_amounts = [-35, -51, -67, -84, -99];
+  var all_prob_triggers = [.2, .4, .6, .8];
+
+  win_o1_trig_trials = [];
+
+  var fractal_images = ["img/fractal_A.png",
+    "img/fractal_B.png",
+    "img/fractal_C.png"
+  ]
+
+  var thing_images = ["img/animal.png",
+      "img/camera.png",
+      "img/place.png"
+  ]
+
+
+  // loop through win stuff
+  for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
+    for (var tv_idx = 0; tv_idx < all_win_amounts.length; tv_idx++){
+      for (var p_idx = 0; p_idx < all_prob_triggers.length; p_idx++){
+        var safe_noise = Math.round(10*Math.random() - 5);
+        var trigger_noise = Math.round(10*Math.random() - 5);
+        var other_noise = Math.round(5*Math.random());
+          this_trial = {
+            type: 'evan-run-trial',
+
+            // these define the trial in the frame useful for analysis
+            safe_val_base: all_win_safe_vals[sv_idx], // not the actual val
+            p_trigger: all_prob_triggers[p_idx],
+            trigger_val: all_win_amounts[tv_idx],
+            o1_trigger: 1,
+            safe_noise: safe_noise,
+            trigger_noise: trigger_noise,
+            other_noise: other_noise,
+
+            /// define it in terms useful for actually running the trial
+            /// which stimulus do we want?
+            p_o1: all_prob_triggers[p_idx],
+            safe_val: all_win_safe_vals[sv_idx] + safe_noise,
+            o1_val: all_win_amounts[tv_idx] + trigger_noise, // because O1 is the trigger
+            o2_val: 0 + other_noise,
+            ///
+            o1_image: thing_images[0],
+            o2_image: thing_images[1],
+            safe_image: thing_images[2],
+            // this depends on the proability...
+            choice_image: fractal_images[p_idx]
+          }
+          win_o1_trig_trials.push(this_trial);
+      }
+    }
+  }
+
+
+
+
+
   /* */
   /* create timeline */
   var timeline = [];
@@ -41,15 +129,6 @@
 		"img/fractal_C.png",
 	], 1) */
 
-  var fractal_images = ["img/fractal_A.png",
-    "img/fractal_B.png",
-    "img/fractal_C.png"
-  ]
-
-  var thing_images = ["img/animal.png",
-      "img/camera.png",
-      "img/place.png"
-  ]
 
 /* display a choice image */
 
@@ -68,8 +147,9 @@
   };
 
 
-  timeline.push(evan_trial,evan_trial,evan_trial,evan_trial);
-
+  //timeline.push(evan_trial,evan_trial,evan_trial,evan_trial);
+timeline = win_o1_trig_trials;
+timeline.push(win_o1_trig_trials);
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,

@@ -60,6 +60,8 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var post_choice_time = 1000;
     var outcome_fadein_time = 100;
     var outcome_time = 2000;
+    var max_response_time = 4000;
+    var slow_reply_time = 1000;
 
 
     var parentDiv = document.body;
@@ -111,6 +113,11 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var text_y_vec = [image_y_vec[0] + image_height/2 + text_font_size/2,
                       image_y_vec[1] + image_height/2 + text_font_size/2,
                       image_y_vec[2] + image_height/2 + text_font_size/2];
+
+    var slow_reply_x = w/2;
+    var slow_reply_y = h/2;
+    var slow_reply_font_size = 1.4*text_font_size;
+    var slow_reply_color = "red";
 
     var choice_bkg_color =  good_color_vec[3];
 
@@ -316,7 +323,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
           wait_for_time(info_time,remove_trial_info);
           break;
         case 3:
-          wait_for_time(function(){trial_master(2)}, post_info_time);
+          wait_for_time(post_info_time,function(){trial_master(2)});
         }
       }
 
@@ -356,8 +363,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     // stage 1 funcs
     var display_trial_info = function(stop_here){
 
-      // set time it takes to come on...
-      // to be called after place everything
       d3.select('.info_bkg').transition().style("opacity",.7).duration(info_fadein_time);
 
       d3.selectAll('.info')
@@ -371,7 +376,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     } // end display trial info
 
     var remove_trial_info = function(){
-
       this_next_fun = function(){
          stage_1_master(3);
       }
@@ -395,7 +399,12 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         .style("opacity",1)
         .duration(50)
 
+
       var handle_response = function(info){
+
+        // clear timeout counting response time
+        jsPsych.pluginAPI.clearAllTimeouts();
+
         // only record the first response
         if (response.key == null) {
             response = info;
@@ -410,6 +419,15 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         stage_2_master(2);
       }
 
+      var handle_slow_response = function(){
+        jsPsych.pluginAPI.clearAllTimeouts();
+        place_reward('Please respond faster!', 'slow_reply', slow_reply_x, slow_reply_y, slow_reply_font_size, 1)
+        d3.select(".slow_reply")
+          .attr("fill", "red")
+
+        wait_for_time(slow_reply_time, end_trial);
+      }
+
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: handle_response,
           valid_responses: ['a','r'],
@@ -417,6 +435,8 @@ jsPsych.plugins["evan-run-trial"] = (function() {
           persist: false,
           allow_held_key: false
         });
+
+      wait_for_time(max_response_time, handle_slow_response);
     }
 
     var remove_choice = function(){
