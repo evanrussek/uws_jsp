@@ -66,8 +66,8 @@ jsPsych.plugins["evan-disp-trial-info"] = (function() {
     // stage 1 - display trial info
     // display the info
 
-    var info_time = 1500; // display info for 2 seconds before fade
-    var info_fade_time = 500;
+    var info_time = 100; // display info for 2 seconds before fade
+    var info_fade_time = 100;
     var parentDiv = document.body;
     var w = parentDiv.clientWidth;
     var h = parentDiv.clientHeight;
@@ -280,25 +280,21 @@ jsPsych.plugins["evan-disp-trial-info"] = (function() {
       });
     } // end choice stage
 
-    var choice_feedback = function(){
+    var choice_feedback = function(info){
 
-       //var setupOP = function(sel) {
-        //  counter = sel.size();
-        //}
-
-      //var onOP = function(){
-      //  counter--;
-      //  console.log("onOP called");
-      //  if(counter == 0) {
-      //    console.log("all done");
-      //    fade_out_choice_stim();
-      //  }
-      //}
+      // only record the first response
+      if (response.key == null) {
+        response = info;
+      }
 
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
+      console.log(response)
+      console.log(choice_char);
+      console.log(choice_char == 'a');
 
       var gamble_outcome = -1;
       if (choice_char == 'a'){
+        var choice = 'a';
         if (Math.random() < 0.3)
         {
           gamble_outcome = 0;
@@ -307,8 +303,14 @@ jsPsych.plugins["evan-disp-trial-info"] = (function() {
           gamble_outcome = 1;
           var sel_text = 'oa1'
         }
+      } else{
+        var choice = 'r';
+        var sel_text = 'or';
       }
       // which outcome is it?
+      var both_sel_text = '.ob,.'+sel_text;
+      console.log(both_sel_text)
+      console.log(choice)
 
 
       var fade_out_choice_stim = function(){
@@ -318,18 +320,12 @@ jsPsych.plugins["evan-disp-trial-info"] = (function() {
           .duration(350)
       }
 
-      d3.selectAll('.oa1,.ob')
+      d3.selectAll(both_sel_text)
         //.call(setupOP)
         .style("opacity",1)
 
       fade_out_choice_stim();
     }
-
-    display_trial_info();
-
-
-
-
 
     new_html = '';
 
@@ -337,6 +333,9 @@ jsPsych.plugins["evan-disp-trial-info"] = (function() {
       rt: null,
       key: null
     };
+
+    display_trial_info();
+
 
     // function to end trial when it is time
     var end_trial = function() {

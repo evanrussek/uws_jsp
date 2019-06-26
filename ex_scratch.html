@@ -8,6 +8,7 @@
     <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-fullscreen.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspych-evan-disp-trial-info.js"></script>
+    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-run-trial.js"></script>
     <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link rel='stylesheet' type='text/css' href='default_style.css'>
     <link rel='stylesheet' type='text/css' href='style.css'>
@@ -40,40 +41,34 @@
 		"img/fractal_C.png",
 	], 1) */
 
-  var choice_images = ["img/fractal_A.png",
+  var fractal_images = ["img/fractal_A.png",
     "img/fractal_B.png",
     "img/fractal_C.png"
   ]
 
-  var outcome_images = ["img/animal.png",
+  var thing_images = ["img/animal.png",
       "img/camera.png",
       "img/place.png"
   ]
 
 /* display a choice image */
 
-  var choice_prompt = {
-    type: 'image-keyboard-response',
-    stimulus: choice_images[0],
-    choices: ['a', 'r'],
-    prompt: '<p> Accept (a) or Reject (r) gamble! .</p>'
+
+
+  var evan_trial = {
+    type: 'evan-run-trial',
+    safe_val: 10,
+    o1_val: 20,
+    o2_val: 30,
+    p_o1: .5,
+    o1_image: thing_images[0],
+    o2_image: thing_images[1],
+    safe_image: thing_images[2],
+    choice_image: fractal_images[0]
   };
 
-  var evan_choice_prompt = {
-    type: 'evan-disp-trial-info',
-    stimulus: outcome_images[0],
-    choices: ['a', 'r'],
-    prompt: '<p> Accept (a) or Reject (r) gamble! .</p>'
-  };
 
-  var outcome = {
-    type: 'image-keyboard-response',
-    stimulus: outcome_images[0],
-    choices: jsPsych.NO_KEYS,
-    prompt: '<p> Gamble Accepted! </p>'
-  }
-
-  timeline.push(evan_choice_prompt, outcome);
+  timeline.push(evan_trial,evan_trial,evan_trial,evan_trial);
 
   /* start the experiment */
   jsPsych.init({
