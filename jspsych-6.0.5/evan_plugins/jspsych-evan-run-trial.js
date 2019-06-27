@@ -69,7 +69,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var post_choice_time = 1000;
     var outcome_fadein_time = 100;
     var outcome_time = 2000;
-    var max_response_time = 4000;
+    var max_response_time = 400000;
     var slow_reply_time = 1000;
     var post_response_static_time = 200;
 
