@@ -213,5 +213,5 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
 }
 
 var all_trials = win_o1_trig_trials.concat(win_o2_trig_trials, loss_o1_trig_trials, loss_o1_trig_trials);
-var all_trials_shuff = all_trials;
+var all_trials_shuff = all_trials[1];
 //var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);

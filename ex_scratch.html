@@ -17,6 +17,7 @@
   </head>
   <body></body>
 
+  <script type="text/javascript" src="evan_utils.js"></script>
   <script>
     // generate a random subject ID with 15 characters
     var subject_id = jsPsych.randomization.randomID(15);
@@ -47,16 +48,16 @@
     stimulus: "Welcome to the experiment. Press any key to begin."
   };
 
-/* display a choice image */
 
-
-  //timeline.push(evan_trial,evan_trial,evan_trial,evan_trial);
-//timeline = win_o1_trig_trials;
 timeline = timeline.concat(all_trials_shuff);
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,
-    show_preload_progress_bar: false
+    show_preload_progress_bar: false,
+    on_finish: function() {
+      jsPsych.data.get().localSave('csv','test_res.csv');
+    //on_finish: saveData
+  }
   });
 
 </script>
