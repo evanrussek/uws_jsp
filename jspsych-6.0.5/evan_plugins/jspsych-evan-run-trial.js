@@ -18,6 +18,14 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         type: jsPsych.plugins.parameterType.INT,
         default: undefined
       },
+      allow_reject:{
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: true
+      },
+      show_money_val:{
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: undefined
+      },
       safe_val: {
         type: jsPsych.plugins.parameterType.INT,
         default: undefined
@@ -72,6 +80,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var max_response_time = 400000;
     var slow_reply_time = 1000;
     var post_response_static_time = 200;
+
+    var accept_key = 'c';
+    var reject_key = 'r';
 
 
     var parentDiv = document.body;
@@ -256,15 +267,15 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       // put up the accept outcome 1  (just 1 for now)outcome_img_height
       place_img_bkg("ob",outcome_img_bkg_x,outcome_img_bkg_y,outcome_img_bkg_width,outcome_img_bkg_height,img_bkg_color,opacity);
       place_img(trial.o1_image, "o1", outcome_img_x, outcome_img_y, outcome_img_width, outcome_img_height,opacity);
-      place_reward(trial.o1_val, "o1", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity);
+      if (trial.show_money_val){place_reward(trial.o1_val, "o1", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity)};
 
       // accept outcome 2
       place_img(trial.o2_image, "o2", outcome_img_x, outcome_img_y, outcome_img_width, outcome_img_height,opacity);
-      place_reward(trial.o2_val, "o2", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity);
+      if (trial.show_money_val){place_reward(trial.o2_val, "o2", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity)};
 
       // reject outcome
       place_img(trial.safe_image, "safe", outcome_img_x, outcome_img_y, outcome_img_width, outcome_img_height,opacity);
-      place_reward(trial.safe_val, "safe", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity);
+      if (trial.show_money_val){place_reward(trial.safe_val, "safe", outcome_text_x, outcome_text_y, outcome_text_font_size,opacity)};
     }
 
     var place_choice = function(opacity){
@@ -452,9 +463,15 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         wait_for_time(slow_reply_time, end_trial);
       }
 
+      if (trial.allow_reject){
+        var valid_responses = [accept_key, reject_key];
+      }else{
+        var valid_responses = [accept_key];
+      }
+
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: handle_response,
-          valid_responses: ['a','r'],
+          valid_responses: valid_responses,
           rt_method: 'date',
           persist: false,
           allow_held_key: false
