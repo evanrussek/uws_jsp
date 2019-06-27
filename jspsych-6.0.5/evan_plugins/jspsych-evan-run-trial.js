@@ -9,6 +9,15 @@ jsPsych.plugins["evan-run-trial"] = (function() {
   plugin.info = {
     name: "evan-run-trial",
     parameters: {
+
+      first_stage:{
+        type: jsPsych.plugins.parameterType.INT,
+        default: undefined
+      },
+      last_stage:{
+        type: jsPsych.plugins.parameterType.INT,
+        default: undefined
+      },
       safe_val: {
         type: jsPsych.plugins.parameterType.INT,
         default: undefined
@@ -62,6 +71,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var outcome_time = 2000;
     var max_response_time = 4000;
     var slow_reply_time = 1000;
+    var post_response_static_time = 200;
 
 
     var parentDiv = document.body;
@@ -118,6 +128,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var slow_reply_y = h/2;
     var slow_reply_font_size = 1.4*text_font_size;
     var slow_reply_color = "red";
+
+    var accept_color = "red";
+    var reject_color = "blue";
 
     var choice_bkg_color =  good_color_vec[3];
 
@@ -257,7 +270,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var place_choice = function(opacity){
 
       // put up choice_stim too so we can fade into it
-      place_stg_bkg("choice_stim",choice_bkg_color,opacity);
+      place_stg_bkg("choice_stim choice_bkg",choice_bkg_color,opacity);
       // put up the image background
       place_img_bkg("choice_stim",choice_stim_bkg_x,choice_stim_bkg_y,
                     choice_stim_bkg_width,choice_stim_bkg_height,choice_stim_bkg_color,opacity);
@@ -323,7 +336,8 @@ jsPsych.plugins["evan-run-trial"] = (function() {
           wait_for_time(info_time,remove_trial_info);
           break;
         case 3:
-          wait_for_time(post_info_time,function(){trial_master(2)});
+          if (trial.last_stage < 2){var next_stage_number = 4} else{var next_stage_number = 2};
+          wait_for_time(post_info_time,function(){trial_master(next_stage_number)});
         }
       }
 
@@ -338,8 +352,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
           remove_choice();
           break;
         case 3:
+          if (trial.last_stage < 3){var next_stage_number = 4} else{var next_stage_number = 3};
           console.log('end of stage 2')
-          trial_master(3);
+          trial_master(next_stage_number);
       }
     }
 
@@ -405,10 +420,16 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         // clear timeout counting response time
         jsPsych.pluginAPI.clearAllTimeouts();
 
-        // only record the first response
         if (response.key == null) {
             response = info;
         }
+
+        var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
+
+        // change background color based on choice
+        //if (choice_char == 'a'){d3.select('.choice_bkg').style('fill',accept_color);}
+        //else if (choice_char == 'r'){d3.select('.choice_bkg').style('fill',reject_color);}
+
         // kill keyboard listeners
         if (typeof keyboardListener !== 'undefined') {
           jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
@@ -416,7 +437,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         // call stage_2_master
 
         // want to add something showing that their choice was registered? - maybe change the background color?
+        //this_next_fun = function(){stage_2_master(2);}
+        //wait_for_time(post_response_static_time, this_next_fun);
         stage_2_master(2);
+
       }
 
       var handle_slow_response = function(){
@@ -526,7 +550,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
     // wait pretrial time sec (ITI), call trial master
     jsPsych.pluginAPI.setTimeout(function() {
-       trial_master(1) //
+       trial_master(trial.first_stage) //
      }, pre_trial_time); // this is where the wait time goes
   };
 
