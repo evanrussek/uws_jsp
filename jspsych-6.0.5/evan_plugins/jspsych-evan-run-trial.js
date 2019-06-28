@@ -63,7 +63,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    d3.select(".jspsych-content-wrapper").remove();
+    //d3.select(".jspsych-content-wrapper").remove();
 
     ///// set all timing parameters (in milliseconds)
     var pre_trial_time = 1500;
@@ -71,10 +71,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var info_time = 2000;
     var info_fadeout_time = 100;
     var post_info_time = 1000;
-    var chocie_fadein_time = 100;
-    var choice_time = 4000;
+    var choice_fadein_time = 100;
     var choice_fadeout_time = 100;
-    var post_choice_time = 1000;
+    var post_choice_time = 1000; // what is this??
     var outcome_fadein_time = 100;
     var outcome_time = 2000;
     var max_response_time = 400000;
@@ -86,6 +85,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
 
     var parentDiv = document.body;
+    //var parentDiv = d3.select(".jspsych-content-wrapper");
     var w = parentDiv.clientWidth;
     var h = parentDiv.clientHeight;
 
@@ -193,10 +193,15 @@ jsPsych.plugins["evan-run-trial"] = (function() {
      }
 
     // create svg - stimulus background // need to define this here so other funcs can use it
-    var svg = d3.select(parentDiv)
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h)
+    var svg = d3.select(".jspsych-content-wrapper")
+                .append("svg")
+                .attr("width", w)
+                .attr("height", h)
+
+    //d3.select(parentDiv)
+    //        .append("svg")
+    //        .attr("width", w)
+    //        .attr("height", h)
 
     // place grey background on it
     svg.append("rect")
@@ -357,7 +362,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       switch(stage_2_part){
         case 1:
           //console.log('stage_2_called')
-          wait_for_time(1000, display_choice);
+          // post_info_time
+          display_choice();
+          //wait_for_time(1000, display_choice);
           break;
         case 2:
           remove_choice();
@@ -365,7 +372,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         case 3:
           if (trial.last_stage < 3){var next_stage_number = 4} else{var next_stage_number = 3};
           console.log('end of stage 2')
-          trial_master(next_stage_number);
+          wait_for_time(post_choice_time,function(){trial_master(next_stage_number)});
       }
     }
 
@@ -423,7 +430,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       d3.selectAll('.choice_stim')
         .transition()
         .style("opacity",1)
-        .duration(50)
+        .duration(choice_fadein_time)
 
 
       var handle_response = function(info){
@@ -472,7 +479,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: handle_response,
           valid_responses: valid_responses,
-          rt_method: 'date',
+          rt_method: 'performance', // check this
           persist: false,
           allow_held_key: false
         });
@@ -484,12 +491,13 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       this_next_fun = function(){stage_2_master(3);}
 
       d3.selectAll('.choice_stim').call(setupMT).transition()
-        .style("opacity",0).duration(500).on('end', this_MT)
+        .style("opacity",0).duration(choice_fadeout_time).on('end', this_MT)
     }
 
     //// stage 3 funcs
     var display_outcome = function(){
       // this will display the outcome based on the response, which is a global variable
+      response.choice = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
 
       var next_state = 'safe';
@@ -543,7 +551,21 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     d3.select('svg').remove()
 
     var trial_data = {
-      "p_o1": trial.p_o1
+      "first_stage": trial.first_stage,
+      "last_stage": trial.last_stage,
+      "show_money_val": trial.show_money_val,
+      "p_o1": trial.p_o1,
+      "safe_val": trial.safe_val,
+      "o1_val": trial.o1_val,
+      "o2_val": trial.o2_val,
+      "o1_image": trial.o1_image,
+      "o2_image": trial.o2_image,
+      "safe_image": trial.safe_image,
+      "choice_image": trial.choice_image,
+      "key_press_num": response.key,
+      "choice": response.choice,
+      "rt": response.rt
+      // need to add timing parameters
     };
 
     jsPsych.finishTrial(trial_data);
@@ -556,11 +578,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       key: null
     };
 
-
-    // default trial data that we'll append
-    var trial_data = {
-          "p_o1": trial.p_o1
-    };
 
     //// start the trial -  place everything
     place_everything();

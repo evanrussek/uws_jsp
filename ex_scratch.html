@@ -36,10 +36,12 @@
   /* create timeline */
   var timeline = [];
 
-  timeline.push({
+
+
+  var full_screen = {
     type: 'fullscreen',
     fullscreen_mode: true
-  });
+  };
 
 
   /* define welcome message trial */
@@ -48,8 +50,21 @@
     stimulus: "Welcome to the experiment. Press any key to begin."
   };
 
+var exp_block1_trials = all_trials_shuff.slice(0,3);
+var exp_block2_trials = all_trials_shuff.slice(3,6);
 
-timeline = timeline.concat(all_trials_shuff);
+var block1_node = {
+  timeline: exp_block1_trials,
+  data: {block: 'block1'}
+}
+
+var block2_node = {
+  timeline: exp_block2_trials,
+  data: {block: 'block2'}
+}
+
+
+timeline = [full_screen, block1_node, block2_node];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,

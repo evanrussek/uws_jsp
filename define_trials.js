@@ -36,17 +36,17 @@ var fractal_images = ["img/fractal_A.png",
 "img/fractal_B.png",
 "img/fractal_C.png",
 "img/fractal_D.png"
-]
+];
 
 var thing_images = ["img/animal.png",
   "img/camera.png",
   "img/place.png"
 ]
 
-win_o1_trig_trials = [];
-win_o2_trig_trials = [];
-loss_o1_trig_trials = [];
-loss_o2_trig_trials = [];
+var win_o1_trig_trials = [];
+var win_o2_trig_trials = [];
+var loss_o1_trig_trials = [];
+var loss_o2_trig_trials = [];
 
 ///note noise is set individually for each trial - maybe though sometimes we want the noise to repeat
 
@@ -59,6 +59,18 @@ for (var tv_idx = 0; tv_idx < all_win_amounts.length; tv_idx++){
     var other_noise = Math.round(5*Math.random());
       this_trial = {
         type: 'evan-run-trial',
+
+        data:{
+          // these define the trial in the frame useful for analysis
+          safe_val_base: all_win_safe_vals[sv_idx], // not the actual val
+          p_trigger: all_prob_o1[p_idx], // here p_o1 corresponds to the trigger prob
+          trigger_val: all_win_amounts[tv_idx], // win trial
+          o1_trigger: true,
+          safe_noise: safe_noise,
+          trigger_noise: trigger_noise,
+          other_noise: other_noise,
+          phase:'TEST'
+        },
 
         first_stage: 2,
         last_stage:4,
@@ -102,17 +114,21 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
         this_trial = {
           type: 'evan-run-trial',
 
+          data:{
+            // these define the trial in the frame useful for analysis
+            safe_val_base: all_win_safe_vals[sv_idx], // not the actual val
+            p_trigger: 1 - all_prob_o1[p_idx], // here o2 is the trigger
+            trigger_val: all_win_amounts[tv_idx],
+            o1_trigger: false,
+            safe_noise: safe_noise,
+            trigger_noise: trigger_noise,
+            other_noise: other_noise,
+            phase:'TEST'
+          },
+
           first_stage: 2,
           last_stage:4,
           show_money_val: false,
-          // these define the trial in the frame useful for analysis
-          safe_val_base: all_win_safe_vals[sv_idx], // not the actual val
-          p_trigger: 1 - all_prob_o1[p_idx], // here o2 is the trigger
-          trigger_val: all_win_amounts[tv_idx],
-          o1_trigger: false,
-          safe_noise: safe_noise,
-          trigger_noise: trigger_noise,
-          other_noise: other_noise,
 
           /// define it in terms useful for actually running the trial
           /// which stimulus do we want?
@@ -141,21 +157,23 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
       var other_noise = Math.round(5*Math.random());
         this_trial = {
           type: 'evan-run-trial',
-
-          first_stage: 2,
-          last_stage:4,
-          show_money_val: true,
-          // these define the trial in the frame useful for analysis
-          safe_val_base: all_loss_safe_vals[sv_idx], // not the actual val
-          p_trigger: all_prob_o1[p_idx], // here p_o1 corresponds to the trigger prob
-          trigger_val: all_loss_amounts[tv_idx], // win trial
-          o1_trigger: true,
-          safe_noise: safe_noise,
-          trigger_noise: trigger_noise,
-          other_noise: other_noise,
+          data:{
+            // these define the trial in the frame useful for analysis
+            safe_val_base: all_loss_safe_vals[sv_idx], // not the actual val
+            p_trigger: all_prob_o1[p_idx], // here p_o1 corresponds to the trigger prob
+            trigger_val: all_loss_amounts[tv_idx], // win trial
+            o1_trigger: true,
+            safe_noise: safe_noise,
+            trigger_noise: trigger_noise,
+            other_noise: other_noise,
+            phase:'TEST'
+          },
 
           /// define it in terms useful for actually running the trial
           /// which stimulus do we want?
+          show_money_val: true,
+          first_stage: 2,
+          last_stage:4,
           p_o1: all_prob_o1[p_idx],
           safe_val: all_loss_safe_vals[sv_idx] + safe_noise,
           o1_val: all_loss_amounts[tv_idx] + trigger_noise, // because O1 is the trigger
@@ -182,17 +200,22 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
         this_trial = {
           type: 'evan-run-trial',
 
+          data: {
+            // these define the trial in the frame useful for analysis
+            safe_val_base: all_loss_safe_vals[sv_idx], // not the actual val
+            p_trigger: 1 - all_prob_o1[p_idx], // here o2 is the trigger
+            trigger_val: all_loss_amounts[tv_idx],
+            o1_trigger: false,
+            safe_noise: safe_noise,
+            trigger_noise: trigger_noise,
+            other_noise: other_noise,
+            phase:'TEST'
+          },
+
           first_stage: 2,
           last_stage:4,
           show_money_val: true,
-          // these define the trial in the frame useful for analysis
-          safe_val_base: all_loss_safe_vals[sv_idx], // not the actual val
-          p_trigger: 1 - all_prob_o1[p_idx], // here o2 is the trigger
-          trigger_val: all_loss_amounts[tv_idx],
-          o1_trigger: false,
-          safe_noise: safe_noise,
-          trigger_noise: trigger_noise,
-          other_noise: other_noise,
+
 
           /// define it in terms useful for actually running the trial
           /// which stimulus do we want?
@@ -212,6 +235,24 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
   }
 }
 
-var all_trials = win_o1_trig_trials.concat(win_o2_trig_trials, loss_o1_trig_trials, loss_o1_trig_trials);
-var all_trials_shuff = all_trials[1];
-//var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);
+var all_trials = win_o1_trig_trials.concat(win_o2_trig_trials, loss_o1_trig_trials, loss_o2_trig_trials);
+//var all_trials_shuff =  all_trials.slice(0,2);
+// add trial_number
+// should we be counterbalancing order in some way? // also want a few breaks maybe
+var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);
+for (var tn = 0; tn < all_trials_shuff.length; tn++){
+  var b = tn;
+  console.log('index_val ' + tn)
+  all_trials_shuff[tn].data.trial_num = b+1;
+  console.log('assigned_num: ' + all_trials_shuff[tn].data.trial_num)
+  console.log(all_trials_shuff[tn])
+  console.log('assigned_num again: ' + all_trials_shuff[tn].data.trial_num)
+}
+
+//console.log(all_trials_shuff)
+
+
+for (var a = 0; a < all_trials_shuff.length; a++){
+  console.log('post_loop_index: ' + a)
+  console.log('post_loop_val '+all_trials_shuff[a].data.trial_num)
+}
