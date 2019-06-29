@@ -5,6 +5,7 @@
     <title>My experiment</title>
     <script src="jspsych-6.0.5/jspsych.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6.0.5/plugins/jspsych-html-button-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-fullscreen.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspych-evan-disp-trial-info.js"></script>
@@ -63,8 +64,16 @@ var block2_node = {
   data: {block: 'block2'}
 }
 
+var button_trial = {
+    type: 'html-button-response',
+    stimulus: '<p>Running</p>',
+    choices: ['Healthy', 'Unhealthy', 'Neither'],
+    prompt: "<p>Is this activity healthy or unhealthy?</p>"
+};
 
-timeline = [full_screen, block1_node, block2_node];
+
+//timeline = [full_screen, block1_node, block2_node];
+timeline = [button_trial];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,

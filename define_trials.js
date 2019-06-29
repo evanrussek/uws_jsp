@@ -242,17 +242,5 @@ var all_trials = win_o1_trig_trials.concat(win_o2_trig_trials, loss_o1_trig_tria
 var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);
 for (var tn = 0; tn < all_trials_shuff.length; tn++){
   var b = tn;
-  console.log('index_val ' + tn)
   all_trials_shuff[tn].data.trial_num = b+1;
-  console.log('assigned_num: ' + all_trials_shuff[tn].data.trial_num)
-  console.log(all_trials_shuff[tn])
-  console.log('assigned_num again: ' + all_trials_shuff[tn].data.trial_num)
-}
-
-//console.log(all_trials_shuff)
-
-
-for (var a = 0; a < all_trials_shuff.length; a++){
-  console.log('post_loop_index: ' + a)
-  console.log('post_loop_val '+all_trials_shuff[a].data.trial_num)
 }
