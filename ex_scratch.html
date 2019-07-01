@@ -38,7 +38,6 @@
   var timeline = [];
 
 
-
   var full_screen = {
     type: 'fullscreen',
     fullscreen_mode: true
@@ -64,16 +63,17 @@ var block2_node = {
   data: {block: 'block2'}
 }
 
+// returns button pressed
 var button_trial = {
     type: 'html-button-response',
-    stimulus: '<p>Running</p>',
-    choices: ['Healthy', 'Unhealthy', 'Neither'],
+    stimulus: '<p>Which Blocko Do you want to do?</p>',
+    choices: ['First Block', 'Second Block', 'Neither'],
     prompt: "<p>Is this activity healthy or unhealthy?</p>"
 };
 
 
-//timeline = [full_screen, block1_node, block2_node];
-timeline = [button_trial];
+timeline = [full_screen, block1_node, block2_node];
+//timeline = [button_trial];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,

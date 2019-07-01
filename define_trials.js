@@ -31,17 +31,36 @@ var all_win_amounts = [35, 51, 67, 84, 99];
 var all_loss_amounts = [-35, -51, -67, -84, -99];
 var all_prob_o1 = [.2, .4, .6, .8];
 
-
+// make these choice images maybe?
 var fractal_images = ["img/fractal_A.png",
 "img/fractal_B.png",
 "img/fractal_C.png",
 "img/fractal_D.png"
 ];
 
-var thing_images = ["img/animal.png",
-  "img/camera.png",
-  "img/place.png"
-]
+var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In02.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In03.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In04.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In05.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In06.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In07.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In08.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In09.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In10.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In11.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In12.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In13.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In14.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In15.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In16.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In17.png",
+                    "Stimuli/MEG_Stimuli/intermediate/In18.png",
+                  ];
+
+fractal_images = thing_images.slice(10,14);
+
+
 
 var win_o1_trig_trials = [];
 var win_o2_trig_trials = [];

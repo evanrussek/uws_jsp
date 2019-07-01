@@ -66,19 +66,21 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     //d3.select(".jspsych-content-wrapper").remove();
 
     ///// set all timing parameters (in milliseconds)
+
     var pre_trial_time = 1500;
     var info_fadein_time = 100;
     var info_time = 2000;
     var info_fadeout_time = 100;
     var post_info_time = 1000;
     var choice_fadein_time = 100;
+    var max_response_time = 400000;
     var choice_fadeout_time = 100;
     var post_choice_time = 1000; // what is this??
     var outcome_fadein_time = 100;
-    var outcome_time = 2000;
-    var max_response_time = 400000;
+    var outcome_time = 100000;
+    var outcome_fadeout_time = 100;
     var slow_reply_time = 1000;
-    var post_response_static_time = 200;
+    //var post_response_static_time = 200;
 
     var accept_key = 'c';
     var reject_key = 'r';
@@ -380,10 +382,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       switch(stage_3_part){
         case 1:
           // specify how long to wait
-          wait_for_time(500, display_outcome);
+          wait_for_time(post_choice_time, display_outcome);
           break;
         case 2:
-          wait_for_time(1000, remove_outcome);
+          wait_for_time(outcome_time, remove_outcome);
           break;
         case 3:
           trial_master(4);
@@ -501,7 +503,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
 
       var next_state = 'safe';
-      if (choice_char == 'a'){
+      if (choice_char == accept_key){
         var choice = 'accept'; // accept
         if (Math.random() < trial.p_o1)
         {
@@ -524,7 +526,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         .call(setupMT)
         .transition()
         .style("opacity",1)
-        .duration(50)
+        .duration(outcome_fadein_time)
         .on('end', this_MT)
     } // end display outcome
 
@@ -538,7 +540,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         .call(setupMT)
         .transition()
         .style("opacity",0)
-        .duration(50)
+        .duration(outcome_fadeout_time)
         .on('end', this_MT)
     } // end remove outcome
 
