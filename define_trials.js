@@ -32,11 +32,11 @@ var all_loss_amounts = [-35, -51, -67, -84, -99];
 var all_prob_o1 = [.2, .4, .6, .8];
 
 // make these choice images maybe?
-var fractal_images = ["img/fractal_A.png",
-"img/fractal_B.png",
-"img/fractal_C.png",
-"img/fractal_D.png"
-];
+//var fractal_images = ["img/fractal_A.png",
+//"img/fractal_B.png",
+//"img/fractal_C.png",
+//"img/fractal_D.png"
+//];
 
 var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In02.png",
@@ -58,7 +58,7 @@ var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In18.png",
                   ];
 
-fractal_images = thing_images.slice(10,14);
+var fractal_images = thing_images.slice(10,14);
 
 
 
