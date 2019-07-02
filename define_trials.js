@@ -58,7 +58,7 @@ var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In18.png",
                   ];
 
-var fractal_images = thing_images.slice(10,14);
+var fractal_images = thing_images.slice(6,14);
 
 
 

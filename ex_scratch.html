@@ -8,11 +8,11 @@
     <script src="jspsych-6.0.5/plugins/jspsych-html-button-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-fullscreen.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspych-evan-disp-trial-info.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-run-trial.js"></script>
+    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-instructions.js"></script>
     <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link rel='stylesheet' type='text/css' href='default_style.css'>
-    
+
     <link rel='stylesheet' type='text/css' href='style.css'>
     <script type="text/javascript" src="jspsych-6.0.5/d3.min.js"></script>
 
@@ -27,7 +27,7 @@
     var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['conditionA', 'conditionB', 'conditionC'], 1)[0];
   </script>
 
-
+  <script type="text/javascript" src="parameters.js"></script>
   <script type="text/javascript" src="define_trials.js"></script>
 
 
@@ -51,7 +51,7 @@
     stimulus: "Welcome to the experiment. Press any key to begin."
   };
 
-var exp_block1_trials = all_trials_shuff.slice(0,3);
+var exp_block1_trials = all_trials_shuff.slice(0,100);
 var exp_block2_trials = all_trials_shuff.slice(3,6);
 
 var block1_node = {
@@ -72,9 +72,20 @@ var button_trial = {
     prompt: "<p>Is this activity healthy or unhealthy?</p>"
 };
 
+var inst_trial = {
+    type: 'evan-instructions',
+    pages: [
+        'Welcome to the experiment. Click next to begin.',
+        'This is the second page of instructions.',
+        'This is the final page.'
+    ],
+    show_clickable_nav: true
+}
 
-timeline = [full_screen, block1_node, block2_node];
+
+//timeline = [full_screen, block1_node, block2_node];
 //timeline = [button_trial];
+timeline = [inst_trial];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,
