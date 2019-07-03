@@ -271,3 +271,18 @@ for (var tn = 0; tn < all_trials_shuff.length; tn++){
   var b = tn;
   all_trials_shuff[tn].data.trial_num = b+1;
 }
+
+
+
+var choice_trial = {
+  type: 'evan-two-stim-choice',
+  first_stage: 1,
+  o1_val: 20,
+  o2_val: 10,
+  p_o1_c1: .3,
+  p_o1_c2: .7,
+  o1_image: thing_images[0],
+  o2_image: thing_images[1],
+  c1_image: fractal_images[0],
+  c2_image: fractal_images[1]
+}

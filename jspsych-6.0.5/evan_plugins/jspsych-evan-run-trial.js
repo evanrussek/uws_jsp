@@ -63,8 +63,22 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    par = define_parameters('trial', trial.o1_image, trial.o2_image,
-              trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);
+    var outcome_images = [trial.o1_image, trial.o2_image, trial.safe_image];
+    var outcome_vals = [trial.o1_val, trial.o2_val, trial.safe_val];
+
+    var myInds = [0,1,2];
+    var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
+
+    //par = define_parameters('trial', trial.o1_image, trial.o2_image,
+    //          trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);
+
+    par = define_parameters('trial')
+
+    par.outcome_images = [trial.o1_image, trial.o2_image, trial.safe_image];
+    par.outcome_vals = [trial.o1_val, trial.o2_val, trial.safe_val];
+
+    myInds = [0,1,2];
+    par.shuffledInds = jsPsych.randomization.repeat(myInds, 1);
 
     //d3.select(".jspsych-content-wrapper").remove();
 

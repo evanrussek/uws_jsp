@@ -1,4 +1,4 @@
-var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_val, o2_val, safe_val){
+var define_parameters = function(exp_stage){
 
   var pre_trial_time = 2000; // this is the ITI
   var info_fadein_time = 0;
@@ -51,11 +51,11 @@ var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_v
                       h/2 - image_height/2,
                       h/2 - image_height/2 + background_height/3];
 
-  var outcome_images = [o1_image, o2_image, safe_image];
-  var outcome_vals = [o1_val, o2_val, safe_val];
+  //var outcome_images = [o1_image, o2_image, safe_image];
+  //var outcome_vals = [o1_val, o2_val, safe_val];
 
-  var myInds = [0,1,2];
-  var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
+  //var myInds = [0,1,2];
+  //var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
 
   var img_bkg_width = background_width/2;
   var img_bkg_height = 2*background_height/7;
@@ -155,10 +155,10 @@ var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_v
     image_x: image_x,
     image_y_vec: image_y_vec,
 
-    outcome_images: outcome_images,
-    outcome_vals: outcome_vals,
+    //outcome_images: outcome_images,
+    //outcome_vals: outcome_vals,
 
-    shuffledInds: shuffledInds,
+    //shuffledInds: shuffledInds,
 
     img_bkg_width: img_bkg_width,
     img_bkg_height: img_bkg_height,

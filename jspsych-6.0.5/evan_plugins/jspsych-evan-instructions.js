@@ -166,6 +166,7 @@ jsPsych.plugins["evan-instructions"]  = (function() {
 
     // show image
     function page_2_image(){
+      /// pause this for a bit... you were here though - need to figure out subject params - other things are trial parameters
 
       // make some text, display with HTML
       var this_text = 'Here are the three types of banknotes used by the casino. <br>';
