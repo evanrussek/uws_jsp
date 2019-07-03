@@ -38,7 +38,7 @@ var all_prob_o1 = [.2, .4, .6, .8];
 //"img/fractal_D.png"
 //];
 
-var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
+var all_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In02.png",
                     "Stimuli/MEG_Stimuli/intermediate/In03.png",
                     "Stimuli/MEG_Stimuli/intermediate/In04.png",
@@ -58,7 +58,14 @@ var thing_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In18.png",
                   ];
 
-var fractal_images = thing_images.slice(6,14);
+var thing_images = all_images.slice(0,7);
+
+var thing_names = ["Wallet", "Scissors", "Suitcase", "Key",
+                  "Marbles", "Barrell", "Zebra"];
+
+
+
+var fractal_images = thing_images.slice(3,7);
 
 
 
@@ -91,9 +98,9 @@ for (var tv_idx = 0; tv_idx < all_win_amounts.length; tv_idx++){
           phase:'TEST'
         },
 
-        first_stage: 2,
+        first_stage: 1,
         last_stage:4,
-        show_money_val: false,
+        show_money_val: true,
         allow_reject: false,
         // these define the trial in the frame useful for analysis
         safe_val_base: all_win_safe_vals[sv_idx], // not the actual val
@@ -258,7 +265,8 @@ var all_trials = win_o1_trig_trials.concat(win_o2_trig_trials, loss_o1_trig_tria
 //var all_trials_shuff =  all_trials.slice(0,2);
 // add trial_number
 // should we be counterbalancing order in some way? // also want a few breaks maybe
-var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);
+//var all_trials_shuff = jsPsych.randomization.repeat(all_trials, 1);
+var all_trials_shuff = all_trials;
 for (var tn = 0; tn < all_trials_shuff.length; tn++){
   var b = tn;
   all_trials_shuff[tn].data.trial_num = b+1;

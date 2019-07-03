@@ -79,13 +79,21 @@ var inst_trial = {
         'This is the second page of instructions.',
         'This is the final page.'
     ],
-    show_clickable_nav: true
+    show_clickable_nav: true,
+    o1_image: thing_images[0], // set per subject, using subject number -- need to counterbalance this...
+    o2_image: thing_images[1], //
+    safe_image: thing_images[2],
+    o1_name: thing_names[0],
+    o2_name:  thing_names[1],
+    safe_name: thing_names[2],
+    // this depends on the proability...
+    choice_image: fractal_images[1] // each cho
 }
 
 
-//timeline = [full_screen, block1_node, block2_node];
+timeline = [full_screen, block1_node, block2_node];
 //timeline = [button_trial];
-timeline = [inst_trial];
+//timeline = [full_screen,inst_trial];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,

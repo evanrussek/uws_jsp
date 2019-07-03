@@ -74,11 +74,27 @@ jsPsych.plugins["evan-instructions"]  = (function() {
         pretty_name: 'Button label next',
         default: 'Next',
         description: 'The text that appears on the button to go forwards.'
+      },
+      o1_image: {
+        type: jsPsych.plugins.parameterType.IMAGE,
+        default: undefined
+      },
+      o2_image: {
+        type: jsPsych.plugins.parameterType.IMAGE,
+        default: undefined
+      },
+      safe_image: {
+        type: jsPsych.plugins.parameterType.IMAGE,
+        default: undefined
       }
     }
   }
 
   plugin.trial = function(display_element, trial) {
+
+    par = define_parameters('instruction', trial.o1_image,
+                      trial.o2_image, trial.safe_image,
+                      30, -10, 10)
 
     var current_page = 0;
 
@@ -99,7 +115,9 @@ jsPsych.plugins["evan-instructions"]  = (function() {
     }
 
     function show_current_page() {
-      var html = trial.pages[current_page];
+      //var html = trial.pages[current_page];
+
+      //display_element.innerHTML += html;
 
       var pagenum_display = "";
       if(trial.show_page_number) {
@@ -117,12 +135,20 @@ jsPsych.plugins["evan-instructions"]  = (function() {
         if (trial.pages.length > 1 && trial.show_page_number) {
             nav_html += pagenum_display;
         }
+
         nav_html += "<button id='jspsych-instructions-next' class='jspsych-btn'"+
             "style='margin-left: 5px;'>"+trial.button_label_next+
             " &gt;</button></div>";
 
-        html += nav_html;
-        display_element.innerHTML = html;
+        //html += nav_html;
+        page_2_image()
+
+        display_element.innerHTML += nav_html;
+
+
+
+
+
         if (current_page != 0 && trial.allow_backward) {
           display_element.querySelector('#jspsych-instructions-back').addEventListener('click', btnListener);
         }
@@ -140,6 +166,13 @@ jsPsych.plugins["evan-instructions"]  = (function() {
 
     // show image
     function page_2_image(){
+
+      // make some text, display with HTML
+      var this_text = 'Here are the three types of banknotes used by the casino. <br>';
+      display_element.innerHTML += this_text;
+
+
+
       d3.select('.jspsych-content')
         .append("svg")
         .attr("width", par.w)
@@ -150,52 +183,41 @@ jsPsych.plugins["evan-instructions"]  = (function() {
           .attr("x", 0).attr("y", 0).attr("width", par.w)
           .attr("height", par.h).style("fill", par.svg_color).style("opacity",.7);
 
+
+        //d3.select("svg").append("rect")
+        //  .attr("class", 'info')
+        //  .attr("x", par.w/2 - par.background_width/2)
+        //  .attr("y", par.h/2 - par.background_height/2)
+        //  .attr("width", par.background_width)
+        //  .attr("height", par.background_height)
+        //  .style("fill", par.info_bkg_color)
+        //  .style("opacity",.7);
+
+        var img_y = par.h/2 - par.image_height;
+
+        var img_x_vec = [par.w/6 - 1*par.image_width, par.w/2 - 1*par.image_width, 5*par.w/6 - 1*par.image_width];
+
+
+
+        var img_bkg_x_vec = [par.w/6 - par.background_width/2 + par.background_width/4,
+                              par.w/2 - par.background_width/2 + par.background_width/4,
+                              5*par.w/6 - par.background_width/2 + par.background_width/4];
+
+        var img_bkg_y = par.h/2 - par.image_height + par.image_height/2 - par.img_bkg_height/2;
+
+        var text_vec = ["Suitcase Banknote", "Wallet Banknote", "Marbles Banknote"];
+        var text_x_vec = [img_bkg_x_vec[0] + par.img_bkg_width/2, img_bkg_x_vec[1] + par.img_bkg_width/2, img_bkg_x_vec[2] + par.img_bkg_width/2];
+        var text_y = img_bkg_y - par.img_bkg_height/4;
+
+          // place every image specific background and every image on top of it
+          for (var i=0; i<3; i++){
+            place_img_bkg("info",img_bkg_x_vec[i],img_bkg_y,par.img_bkg_width,par.img_bkg_height,par.img_bkg_color,1);
+            place_img(par.outcome_images[i], "info", img_x_vec[i], img_y, par.image_width, par.image_height,1);
+            place_text(text_vec[i], "info", text_x_vec[i], text_y, 2*par.text_font_size/3, 1, "white")
+          }
       // show the three types of bank notes
     }
 
-
-    /// functions for placing things, should move these at some point
-    var place_img_bkg = function(class_name,x,y,width,height,color, opacity){
-      d3.select("svg").append("rect")
-              .attr("class",class_name)
-              .attr("x", x)
-              .attr("y", y)
-              .attr("width", width)
-              .attr("height", height)
-              .style("fill", color)
-              .style("opacity",opacity);
-    }
-
-    var place_img = function(im_name, class_name, x, y, width, height, opacity){
-      d3.select("svg").append("svg:image").attr("class", class_name).attr("x", x)
-          .attr("y", y).attr("width",width).attr("height",height)
-          .attr("xlink:href", im_name).style("opacity",opacity);
-    }
-
-    var place_reward = function(magnitude, class_name, x, y, font_size, opacity){
-       d3.select("svg").append("text")
-                 .attr("class", class_name)
-                 .attr("x",  x)
-                 .attr("y", y)
-                 .attr("font-family","monospace")
-                 .attr("font-weight","bold")
-                 .attr("font-size",font_size)
-                 .attr("text-anchor","middle")
-                 .attr("fill", "yellow")
-                 .style("opacity",opacity)
-                 .text(magnitude)
-    }
-
-    var place_info = function(opacity){
-      // place stage background
-      place_stg_bkg("info_bkg",par.info_bkg_color,opacity);
-      // place every image specific background and every image on top of it
-      for (var i=0; i<3; i++){
-        place_img_bkg("info",par.img_bkg_x,par.img_bkg_y_vec[i],par.img_bkg_width,par.img_bkg_height,par.img_bkg_color,opacity);
-        place_img(par.outcome_images[par.shuffledInds[i]], "info", par.image_x, par.image_y_vec[i], par.image_width, par.image_height,opacity);
-        place_reward(par.outcome_vals[par.shuffledInds[i]], "info", par.text_x, par.text_y_vec[i], par.text_font_size,opacity);
-      }
-    }
 
 
 

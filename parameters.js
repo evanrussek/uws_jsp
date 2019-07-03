@@ -1,17 +1,17 @@
 var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_val, o2_val, safe_val){
 
-  var pre_trial_time = 1500;
-  var info_fadein_time = 100;
-  var info_time = 2000;
-  var info_fadeout_time = 100;
+  var pre_trial_time = 2000; // this is the ITI
+  var info_fadein_time = 0;
+  var info_time = 3000;
+  var info_fadeout_time = 300;
   var post_info_time = 1000;
-  var choice_fadein_time = 100;
+  var choice_fadein_time = 0;
   var max_response_time = 400000;
-  var choice_fadeout_time = 100;
+  var choice_fadeout_time = 300;
   var post_choice_time = 1000; // what is this??
   var outcome_fadein_time = 100;
-  var outcome_time = 1000;
-  var outcome_fadeout_time = 100;
+  var outcome_time = 1500;
+  var outcome_fadeout_time = 300;
   var slow_reply_time = 1000;
   //var post_response_static_time = 200;
 
@@ -23,7 +23,7 @@ var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_v
   if (exp_stage == 'trial'){
     var w = parentDiv.clientWidth;
     var h = parentDiv.clientHeight;
-  } else if(exp_stage == 'instructions'){
+  } else if(exp_stage == 'instruction'){
     var w = parentDiv.clientWidth/2;
     var h = parentDiv.clientHeight/2;
   }
@@ -109,6 +109,9 @@ var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_v
   var outcome_text_x = text_x;
   var outcome_text_y = text_y_vec[1];
   var outcome_text_font_size = text_font_size;
+
+  // instruction page 2 parametesr
+
 
   var ver1 = {
 
@@ -207,4 +210,50 @@ var define_parameters = function(exp_stage, o1_image, o2_image, safe_image, o1_v
     outcome_text_font_size: outcome_text_font_size,
   }
   return ver1
+}
+
+
+/// functions for placing things, should move these at some point
+var place_img_bkg = function(class_name,x,y,width,height,color, opacity){
+  d3.select("svg").append("rect")
+          .attr("class",class_name)
+          .attr("x", x)
+          .attr("y", y)
+          .attr("width", width)
+          .attr("height", height)
+          .style("fill", color)
+          .style("opacity",opacity);
+}
+
+var place_img = function(im_name, class_name, x, y, width, height, opacity){
+  d3.select("svg").append("svg:image").attr("class", class_name).attr("x", x)
+      .attr("y", y).attr("width",width).attr("height",height)
+      .attr("xlink:href", im_name).style("opacity",opacity);
+}
+
+var place_reward = function(magnitude, class_name, x, y, font_size, opacity){
+   d3.select("svg").append("text")
+             .attr("class", class_name)
+             .attr("x",  x)
+             .attr("y", y)
+             .attr("font-family","monospace")
+             .attr("font-weight","bold")
+             .attr("font-size",font_size)
+             .attr("text-anchor","middle")
+             .attr("fill", "yellow")
+             .style("opacity",opacity)
+             .text(magnitude)
+}
+var place_text = function(text, class_name, x, y, font_size, opacity, color){
+   d3.select("svg").append("text")
+             .attr("class", class_name)
+             .attr("x",  x)
+             .attr("y", y)
+             .attr("font-family","monospace")
+             .attr("font-weight","bold")
+             .attr("font-size",font_size)
+             .attr("text-anchor","middle")
+             .attr("fill", color)
+             .style("opacity",opacity)
+             .text(text)
 }

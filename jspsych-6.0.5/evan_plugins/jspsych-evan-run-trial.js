@@ -117,16 +117,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
               .style("opacity",opacity);
       };
 
-    var place_img_bkg = function(class_name,x,y,width,height,color, opacity){
-      d3.select("svg").append("rect")
-              .attr("class",class_name)
-              .attr("x", x)
-              .attr("y", y)
-              .attr("width", width)
-              .attr("height", height)
-              .style("fill", color)
-              .style("opacity",opacity);
-    }
 
     var place_fixation = function(){
       d3.select('svg').append("text")
@@ -143,25 +133,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
                 .text('+')
       }
 
-    var place_img = function(im_name, class_name, x, y, width, height, opacity){
-      d3.select("svg").append("svg:image").attr("class", class_name).attr("x", x)
-          .attr("y", y).attr("width",width).attr("height",height)
-          .attr("xlink:href", im_name).style("opacity",opacity);
-    }
-
-    var place_reward = function(magnitude, class_name, x, y, font_size, opacity){
-       d3.select("svg").append("text")
-                 .attr("class", class_name)
-                 .attr("x",  x)
-                 .attr("y", y)
-                 .attr("font-family","monospace")
-                 .attr("font-weight","bold")
-                 .attr("font-size",font_size)
-                 .attr("text-anchor","middle")
-                 .attr("fill", "yellow")
-                 .style("opacity",opacity)
-                 .text(magnitude)
-    }
 
     var place_outcomes = function(opacity){
       // put up the accept outcome 1  (just 1 for now)outcome_img_height
@@ -283,7 +254,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       switch(stage_3_part){
         case 1:
           // specify how long to wait
-          wait_for_time(par.post_choice_time, display_outcome);
+          display_outcome();
           break;
         case 2:
           wait_for_time(par.outcome_time, remove_outcome);
