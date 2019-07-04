@@ -284,7 +284,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     // stage 1 funcs
     var display_trial_info = function(stop_here){
 
-      d3.select('.info_bkg').transition().style("opacity",.7).duration(par.info_fadein_time);
+      d3.select('.info_bkg').transition().style("opacity",1).duration(par.info_fadein_time);
 
       d3.selectAll('.info')
         .transition()

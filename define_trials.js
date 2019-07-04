@@ -284,5 +284,7 @@ var choice_trial = {
   o1_image: thing_images[0],
   o2_image: thing_images[1],
   c1_image: fractal_images[0],
-  c2_image: fractal_images[1]
+  c2_image: fractal_images[1],
+  choice_prompt: true,
+  info_prompt: true
 }

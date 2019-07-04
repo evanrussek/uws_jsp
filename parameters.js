@@ -13,6 +13,8 @@ var define_parameters = function(exp_stage){
   var outcome_time = 1500;
   var outcome_fadeout_time = 300;
   var slow_reply_time = 1000;
+
+  var choice_side_fade_time = 100;
   //var post_response_static_time = 200;
 
   var accept_key = 'c';
@@ -110,6 +112,9 @@ var define_parameters = function(exp_stage){
   var outcome_text_y = text_y_vec[1];
   var outcome_text_font_size = text_font_size;
 
+  var stg_bkg_x = w/2 - background_width/2;
+  var stg_bkg_y = h/2 - background_height/2;
+
   // instruction page 2 parametesr
 
 
@@ -129,6 +134,7 @@ var define_parameters = function(exp_stage){
     outcome_fadeout_time: outcome_fadeout_time,
     slow_reply_time: slow_reply_time,
     //var post_response_static_time: 200,
+    choice_side_fade_time: choice_side_fade_time,
 
     accept_key: accept_key,
     reject_key: reject_key,
@@ -157,6 +163,9 @@ var define_parameters = function(exp_stage){
 
     //outcome_images: outcome_images,
     //outcome_vals: outcome_vals,
+
+    stg_bkg_x: stg_bkg_x,
+    stg_bkg_y: stg_bkg_y,
 
     //shuffledInds: shuffledInds,
 

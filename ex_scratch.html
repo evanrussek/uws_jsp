@@ -101,7 +101,8 @@ timeline = [full_screen, choice_trial];
     timeline: timeline,
     show_preload_progress_bar: false,
     on_finish: function() {
-      jsPsych.data.get().localSave('csv','test_res.csv');
+      console.log('done')
+      //jsPsych.data.get().localSave('csv','test_res.csv');
     //on_finish: saveData
   }
   });
