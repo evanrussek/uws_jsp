@@ -1,5 +1,6 @@
 
 jsPsych.plugins["evan-two-stim-choice"] = (function() {
+  /// problem::: choise is processed in outcome stage -- want it processed in choice stage
 
   var plugin = {};
 
@@ -7,6 +8,10 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
     name: "evan-two-stim-choice",
     parameters: {
         first_stage:{
+          type: jsPsych.plugins.parameterType.INT,
+          default: undefined
+        },
+        last_stage:{
           type: jsPsych.plugins.parameterType.INT,
           default: undefined
         },
@@ -49,6 +54,10 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       info_prompt: {
       type: jsPsych.plugins.parameterType.BOOL,
       default: undefined
+   },
+     correct_machine: { // coded as 1 or 2
+       type: jsPsych.plugins.parameterType.INT,
+       default: undefined
    }
   }
  }
@@ -56,15 +65,15 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
   plugin.trial = function(display_element, trial) {
 
     par = define_parameters('trial');
-    par.outcome_images= [trial.o1_image, trial.o2_image];
     var myInds = [0,1];
     par.shuffledInds = jsPsych.randomization.repeat(myInds, 1);
     par.outcome_vals = [trial.o1_val, trial.o2_val];
+    par.outcome_images= [trial.o1_image, trial.o2_image];
 
     var myCInds = [0,1];
     par.shuffledCInds = jsPsych.randomization.repeat(myInds, 1);
-    par.outcome_vals = [trial.o1_val, trial.o2_val];
-    ////////////////////// YOU WERE RANDOMIZING CHOICE POSITION ??*****************|||||||||||||||||
+    par.choice_images = [trial.c1_image, trial.c2_image];
+    par.p_o1 = [trial.p_o1_c1, trial.p_o1_c2];
 
     var choose_left_key = 'a';
     var choose_right_key = 'b';
@@ -181,9 +190,12 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       place_img_bkg("choice_stim cL",c_bkg_x[0],par.h/2 - img_bkg_height/2, img_bkg_width,img_bkg_height, par.choice_stim_bkg_color, opacity);
       place_img_bkg("choice_stim cR",c_bkg_x[1],par.h/2 - img_bkg_height/2, img_bkg_width,img_bkg_height, par.choice_stim_bkg_color, opacity);
 
+      //var myCInds = [0,1];
+      //par.shuffledCInds = jsPsych.randomization.repeat(myInds, 1);
+      //par.choice_images = [trial.c1_image, trial.c2_image];
 
-      place_img(trial.c1_image, "choice_stim cL", choice_img_x_vec[0], choice_img_y, choice_img_width,choice_img_height,opacity);
-      place_img(trial.c2_image, "choice_stim cR", choice_img_x_vec[1], choice_img_y, choice_img_width,choice_img_height,opacity);
+      place_img(par.choice_images[par.shuffledCInds[0]], "choice_stim cL", choice_img_x_vec[0], choice_img_y, choice_img_width,choice_img_height,opacity);
+      place_img(par.choice_images[par.shuffledCInds[1]], "choice_stim cR", choice_img_x_vec[1], choice_img_y, choice_img_width,choice_img_height,opacity);
 
       // do we want a prompt?
       //var bkg_y = par.h - (par.h - par.stg_bkg_y)/2;
@@ -219,6 +231,34 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           place_info(0,true);
     }
 
+
+    ////// master function which runs the whole trial
+    var trial_master = function(trial_stage){
+      console.log('trial_stage: ' + trial_stage)
+
+      switch(trial_stage){
+        // part 1 is stage 1
+        case 1:
+          // information
+          stage_1_master(1);
+          break;
+
+        case 2:
+          // choice
+          stage_2_master(1);
+          break;
+        case 3:
+          // feedback
+          stage_3_master(1);
+          break;
+        case 4:
+          // end trial
+          console.log('end trial')
+          end_trial();
+          // end the trial
+      }
+    }
+
     //// function to run each stage
     var stage_1_master = function(stage_1_part){
       switch(stage_1_part){
@@ -251,6 +291,21 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
             if (trial.last_stage < 3){var next_stage_number = 4} else{var next_stage_number = 3};
             console.log('end of stage 2')
             wait_for_time(par.post_choice_time,function(){trial_master(next_stage_number)});
+        }
+      }
+
+      var stage_3_master = function(stage_3_part){
+        switch(stage_3_part){
+          case 1:
+            // specify how long to wait
+            display_outcome();
+            break;
+          case 2:
+            wait_for_time(par.outcome_time, remove_outcome);
+            break;
+          case 3:
+            trial_master(4);
+            break;
         }
       }
 
@@ -312,13 +367,24 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         var new_color = "blue";
         console.log('cc: '+choice_char)
 
+        var myCInds = [0,1];
+        par.shuffledCInds = jsPsych.randomization.repeat(myInds, 1);
+        par.choice_images = [trial.c1_image, trial.c2_image];
+        par.p_o1 = [trial.p_o1_c1, trial.p_o1_c2];
+
         if (choice_char == choose_left_key){
           var chosen_class = '.cL';
-          var unchosen_class = '.cR';}
+          var unchosen_class = '.cR';
+          response.chosen_side = 1;
+        }
         else if (choice_char == choose_right_key){
           var chosen_class = '.cR';
-          var unchosen_class = '.cL';}
+          var unchosen_class = '.cL';
+          response.chosen_side = 2;}
         else{console.log('SURPRISE');}
+
+        response.chosen_machine = par.shuffledCInds[response.chosen_side - 1] + 1; // this is 1 or 2
+        correct_response = response.chosen_machine == trial.correct_machine;
 
         this_next_fun = function(){stage_2_master(2);}
         //d3.selectAll('.choice_stim').call(setupMT).transition()
@@ -348,6 +414,9 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           place_reward('Please respond faster!', 'slow_reply', par.slow_reply_x, par.slow_reply_y, par.slow_reply_font_size, 1)
         d3.select(".slow_reply")
           .attr("fill", "red")
+
+        response.chosen_side = "SLOW";
+        response.chosen_machine = "NA";
 
         wait_for_time(par.slow_reply_time, end_trial);
       }
@@ -379,19 +448,18 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       response.choice = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
 
-      var next_state = 'safe';
-      if (choice_char == par.accept_key){
-        var choice = 'accept'; // accept
-        if (Math.random() < trial.p_o1)
-        {
+      var this_p_o1 = par.p_o1[response.chosen_machine];
+
+      if (Math.random() < this_p_o1){
           var next_state = 'o1';
-        } else{
+          outcome_reached = 1;
+        }else{
           var next_state = 'o2';
-        }
-      } else{
-        var next_state = 'safe';
-        var choice = 'reject';
+          outcome_reached = 2;
       }
+
+      points_received = par.outcome_vals[outcome_reached - 1];
+
       sel_text = '.ob,.'+next_state;
 
       this_next_fun = function(){
@@ -421,6 +489,42 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         .on('end', this_MT)
     } // end remove outcome
 
+
+    /// stage 4 - end trial, save data,
+    var end_trial = function(){
+
+      if (typeof keyboardListener !== 'undefined') {
+        jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+      }
+      d3.select('svg').remove()
+
+      // add correctness answer
+
+      var trial_data = {
+        "first_stage": trial.first_stage,
+        "last_stage": trial.last_stage,
+        "show_money_val": trial.show_money_val,
+        "p_o1_c1": trial.p_o1_c1,
+        "p_o1_c2": trial.p_o1_c2,
+        "safe_val": trial.safe_val,
+        "o1_val": trial.o1_val,
+        "o2_val": trial.o2_val,
+        "o1_image": trial.o1_image,
+        "o2_image": trial.o2_image,
+        "choice_image": trial.choice_image,
+        "key_press_num": response.key,
+        "chosen_side": response.chosen_side,
+        "chosen_machine": response.chosen_machine,
+        "outcome_reached": outcome_reached,
+        "outcome_im": par.outcome_images[outcome_reached - 1],
+        "points_recieved": points_received,
+        "rt": response.rt,
+        "correct_response": correct_response
+      };
+
+      jsPsych.finishTrial(trial_data);
+    }
+
     // define the response that we'll append
     var response = {
         rt: null,
@@ -430,14 +534,18 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
     //place_info(1, true)
     //place_choice(1, true)
     place_everything();
-    stage_2_master(1);
+    // wait pretrial time sec (ITI), call trial master
+    jsPsych.pluginAPI.setTimeout(function() {
+       trial_master(trial.first_stage) //
+     }, par.pre_trial_time); // this is where the wait time goes
+//   };
     // data saving
     var trial_data = {
       parameter_name: 'parameter value'
     };
 
     // end trial
-    jsPsych.finishTrial(trial_data);
+    //jsPsych.finishTrial(trial_data);
   };
 
   return plugin;

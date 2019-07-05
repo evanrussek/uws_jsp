@@ -18,6 +18,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         type: jsPsych.plugins.parameterType.INT,
         default: undefined
       },
+      info_catch:{ // quiz on info...
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: false
+      },
       allow_reject:{
         type: jsPsych.plugins.parameterType.BOOL,
         default: true
@@ -331,6 +335,12 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         }
 
         var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
+        response.choice = choice_char;
+        if (choice_char == trial.accept_key){
+          response.accept = 1;
+        } else if (choice_char == trial.reject_key){
+          response.accept = 0;
+        }
 
         // change background color based on choice
         //if (choice_char == 'a'){d3.select('.choice_bkg').style('fill',accept_color);}
@@ -354,6 +364,8 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         place_reward('Please respond faster!', 'slow_reply', par.slow_reply_x, par.slow_reply_y, par.slow_reply_font_size, 1)
         d3.select(".slow_reply")
           .attr("fill", "red")
+        response.choice = "SLOW";
+        response.accept = "NA";
 
         wait_for_time(par.slow_reply_time, end_trial);
       }
@@ -385,7 +397,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     //// stage 3 funcs
     var display_outcome = function(){
       // this will display the outcome based on the response, which is a global variable
-      response.choice = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
+      //response.choice = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
 
       var next_state = 'safe';
@@ -394,14 +406,18 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         if (Math.random() < trial.p_o1)
         {
           var next_state = 'o1';
+          outcome_reached = 1;
         } else{
           var next_state = 'o2';
+          outcome_reached = 2;
         }
       } else{
         var next_state = 'safe';
         var choice = 'reject';
+        outcome_reached = 3;
       }
       sel_text = '.ob,.'+next_state;
+      points_received = par.outcome_vals[outcome_reached - 1];
 
       this_next_fun = function(){
          stage_3_master(2);
@@ -452,7 +468,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       "choice_image": trial.choice_image,
       "key_press_num": response.key,
       "choice": response.choice,
-      "rt": response.rt
+      "rt": response.rt,
+      "accept": response.accept,
+      "outcome_reached": outcome_reached,
+      "points_received": points_received
       // need to add timing parameters
     };
 

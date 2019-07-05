@@ -273,10 +273,10 @@ for (var tn = 0; tn < all_trials_shuff.length; tn++){
 }
 
 
-
 var choice_trial = {
   type: 'evan-two-stim-choice',
   first_stage: 1,
+  last_stage: 4,
   o1_val: 20,
   o2_val: 10,
   p_o1_c1: .3,
@@ -286,5 +286,6 @@ var choice_trial = {
   c1_image: fractal_images[0],
   c2_image: fractal_images[1],
   choice_prompt: true,
-  info_prompt: true
+  info_prompt: true,
+  correct_machine: 2
 }

@@ -92,17 +92,17 @@ var inst_trial = {
 }
 
 
-//timeline = [full_screen, block1_node, block2_node];
+timeline = [full_screen, block1_node, block2_node];
 //timeline = [button_trial];
 //timeline = [full_screen,inst_trial];
-timeline = [full_screen, choice_trial];
+//timeline = [full_screen, choice_trial, choice_trial, choice_trial, choice_trial];
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,
     show_preload_progress_bar: false,
     on_finish: function() {
-      console.log('done')
-      //jsPsych.data.get().localSave('csv','test_res.csv');
+      //console.log('done')
+      jsPsych.data.get().localSave('csv','test_res.csv');
     //on_finish: saveData
   }
   });

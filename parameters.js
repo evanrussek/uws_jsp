@@ -14,7 +14,7 @@ var define_parameters = function(exp_stage){
   var outcome_fadeout_time = 300;
   var slow_reply_time = 1000;
 
-  var choice_side_fade_time = 100;
+  var choice_side_fade_time = 350;
   //var post_response_static_time = 200;
 
   var accept_key = 'c';
