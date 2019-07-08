@@ -289,3 +289,10 @@ var choice_trial = {
   info_prompt: true,
   correct_machine: 2
 }
+
+var info_quiz = {
+  type: 'evan-info-quiz',
+  outcome_name: thing_names[1],
+  outcome_val: 27,
+  other_vals: [13,15,19]
+}

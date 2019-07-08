@@ -18,10 +18,6 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         type: jsPsych.plugins.parameterType.INT,
         default: undefined
       },
-      info_catch:{ // quiz on info...
-        type: jsPsych.plugins.parameterType.BOOL,
-        default: false
-      },
       allow_reject:{
         type: jsPsych.plugins.parameterType.BOOL,
         default: true
