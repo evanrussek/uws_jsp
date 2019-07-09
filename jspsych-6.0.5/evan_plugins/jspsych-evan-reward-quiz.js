@@ -3,38 +3,34 @@
  */
 
 
-// which image was shown?
-jsPsych.plugins["evan-info-quiz"] = (function() {
+// plugin to show either a photo, or a piece of text and ask which reward it was just paired with...
+jsPsych.plugins["evan-reward-quiz"] = (function() {
 
   // add time up and record response...
 
   var plugin = {};
 
   plugin.info = {
-    name: "evan-info-quiz",
+    name: "evan-reward-quiz",
     parameters: {
-      correct_image:{
+      outcome_image:{
         type: jsPsych.plugins.parameterType.IMAGE, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
         default: undefined
       },
-      other_images: {
-        type: jsPsych.plugins.parameterType.IMAGE, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+      outcome_name: {
+        type: jsPsych.plugins.parameterType.STRING, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
         default: undefined
       },
-      correct_name: {
-        type: jsPsych.plugins.parameterType.STRING,
+      outcome_val: {
+        type: jsPsych.plugins.parameterType.INT,
         default: undefined
       },
-      other_names: { // try this for a list...
-        type: jsPsych.plugins.parameterType.STRING,
+      other_vals: { // try this for a list...
+        type: jsPsych.plugins.parameterType.INT,
         default: undefined
       },
       use_image: {
-        type: jsPsych.plugins.parameterType.BOOL,
-        default: undefined
-      },
-      use_outcome: {
-        type: jsPsych.plugins.parameterType.BOOL,
+        type: jsPsych.plugins.parameterType.INT,
         default: undefined
       }
     }
@@ -55,7 +51,7 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
         jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       }
 
-      //wait_for_time(par.slow_reply_time, end_trial);
+      wait_for_time(par.slow_reply_time, end_trial);
     }
 
     var wait_for_time = function(n_msec, next_fun){
@@ -76,6 +72,7 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
                 .attr("width", par.w)
                 .attr("height", par.h)
 
+
     // place grey background on it
     d3.select("svg").append("rect")
           .attr("x", 0).attr("y", 0).attr("width", par.w)
@@ -86,73 +83,19 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
     var q_text_y = par.h/5;
     var q_text_x = par.w/2;
 
-    if (trial.use_outcome){ // 3 options
-      var txt_q = 'Which banknote did you just collect?';
+    if (trial.use_image){
+      var txt_q = 'How many points is this banknote worth?';
       place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
-      var img_x_ctrs = [par.w/4, par.w/2, 3*par.w/4];
 
+      place_img_bkg("info",par.w/2 - .8*par.img_bkg_width/2, 1.65*par.h/5 - .8*par.img_bkg_height/2, .8*par.img_bkg_width,.8*par.img_bkg_height,par.img_bkg_color,1);
+      place_img(trial.outcome_image, "info", par.w/2 - .8*par.image_width,  1.65*par.h/5 - .8*par.image_height/2, .8*par.image_width, .8*par.image_height, 1);
 
-      // background boxes
-      var box_width = 1*par.w/5;
-      var box_height = par.w/8;
-      var box_x = [img_x_ctrs[0] - box_width/2, img_x_ctrs[1] - box_width/2,
-                    img_x_ctrs[2] - box_width/2];
-      var box_y = par.h/2 - box_height/2;
-
-      for (var i = 0; i < 3; i++){
-        var k = i+1;
-        place_img_bkg(["bk" + k], box_x[i], box_y, box_width, box_height, par.good_color_vec[1], 0);
-      }
-
-
-
-      if (trial.use_image){
-        var these_images = [trial.correct_image, trial.other_images[0], trial.other_images[1]];
-        var bkg_width = 1.3*par.img_bkg_width/2;
-        var bkg_height = 1.3*par.img_bkg_height/2;
-        var img_width = 1.3*par.image_width/2;
-        var img_height = 1.3*par.image_height/2;
-
-        var bkg_x_vec = [img_x_ctrs[0] - bkg_width/2, img_x_ctrs[1] - bkg_width/2, img_x_ctrs[2] - bkg_width/2];
-        var img_x_vec = [img_x_ctrs[0] - 2*img_width/2, img_x_ctrs[1] - 2*img_width/2, img_x_ctrs[2] - 2*img_width/2];
-        var img_y = par.h/2 - img_height/2;
-        var bkg_y = par.h/2 - bkg_height/2;
-
-        for (var i = 0; i < 3; i++){
-          place_img_bkg("info",bkg_x_vec[i], bkg_y, bkg_width, bkg_height ,par.img_bkg_color,1);
-          place_img(these_images[i], "info", img_x_vec[i],  img_y, img_width, img_height, 1);
-        }
-      } else{
-        var these_txts = [trial.correct_name, trial.other_names[0], trial.other_names[1]];
-        for (var i = 0; i < 4; i++){
-          place_text(these_txts[i], 'Prompt', img_x_ctrs[i], par.h/2, par.text_font_size/2, 1, "Blue");
-        }
-      }
-      // place key under it
-      var key_vals = [1, 2, 3];
-
-      if (trial.use_image){ var txt_y= 25*par.h/40; var p_y = 26*par.h/40} else{var txt_y= 22.5*par.h/40; var p_y = 24*par.h/40};
-
-      for (var i = 0; i < 3; i++){
-        place_text(key_vals[i], 'Prompt', img_x_ctrs[i], txt_y, par.text_font_size/3, 1, "White");
-      }
-      place_text('Key Press ', 'Prompt', par.w/2, p_y, par.text_font_size/3, 1, "White");
+    } else{
+      var txt_q = 'How many points is this banknote worth?';
+      place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
+      place_text(trial.outcome_name, 'Prompt', q_text_x, 1.7*par.h/5, 2*par.text_font_size/3, 1, "Green");
 
     }
-
-    //if (trial.use_image){
-    //  var txt_q = 'How many points is this banknote worth?';
-    //  place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
-
-    //  place_img_bkg("info",par.w/2 - .8*par.img_bkg_width/2, 1.65*par.h/5 - .8*par.img_bkg_height/2, .8*par.img_bkg_width,.8*par.img_bkg_height,par.img_bkg_color,1);
-    //  place_img(trial.outcome_image, "info", par.w/2 - .8*par.image_width,  1.65*par.h/5 - .8*par.image_height/2, .8*par.image_width, .8*par.image_height, 1);
-
-    //} else{
-    //  var txt_q = 'How many points is this banknote worth?';
-    //  place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
-    //  place_text(trial.outcome_name, 'Prompt', q_text_x, 1.7*par.h/5, 2*par.text_font_size/3, 1, "Green");
-
-    //}
 
     // place money
     var rew_x = [par.w/5, 2*par.w/5, 3*par.w/5, 4*par.w/5];
@@ -172,9 +115,9 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
       place_img_bkg(["bk" + k], box_x[i], box_y, box_width, box_height, par.good_color_vec[1], 0);
     }
 
-    //for (var i = 0; i < 4; i++){
-    //  place_text(money_vals[shuffledInds[i]], 'Prompt', rew_x[i], par.h/2, par.text_font_size/2, 1, "Yellow");
-    //}
+    for (var i = 0; i < 4; i++){
+      place_text(money_vals[shuffledInds[i]], 'Prompt', rew_x[i], par.h/2, par.text_font_size/2, 1, "Yellow");
+    }
 
     // place key under it
     var key_vals = [1, 2, 3, 4];
@@ -200,12 +143,12 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
         if (shuffledInds[parseInt(choice_char)-1] == 0){
           correct = 1;
           place_text('Correct!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red");
-          //wait_for_time(par.quiz_pause_resp_time,function(){place_text('CORRECT!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
-          //wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
+          wait_for_time(par.quiz_pause_resp_time,function(){place_text('CORRECT!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
+          wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
         } else{
           correct = 0;
-          //wait_for_time(par.quiz_pause_resp_time,function(){place_text('WRONG!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
-          //wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
+          wait_for_time(par.quiz_pause_resp_time,function(){place_text('WRONG!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
+          wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
         }
       }
 

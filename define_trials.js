@@ -293,6 +293,18 @@ var choice_trial = {
 var info_quiz = {
   type: 'evan-info-quiz',
   outcome_name: thing_names[1],
+  outcome_image: thing_images[0],
   outcome_val: 27,
-  other_vals: [13,15,19]
+  other_vals: [13,15,19],
+  use_image: false
+}
+
+var info_quiz2 = {
+  type: 'evan-info-quiz',
+  correct_image: thing_images[0],
+  other_images: [thing_images[1], thing_images[2]],
+  correct_name: thing_names[0],
+  other_names: [thing_names[1], thing_names[2]],
+  use_image: true,
+  use_outcome: true
 }

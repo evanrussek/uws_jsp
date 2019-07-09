@@ -363,6 +363,11 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         response.choice = "SLOW";
         response.accept = "NA";
 
+        // kill keyboard listeners
+        if (typeof keyboardListener !== 'undefined') {
+          jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+        }
+
         wait_for_time(par.slow_reply_time, end_trial);
       }
 

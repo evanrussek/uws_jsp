@@ -15,6 +15,9 @@ var define_parameters = function(exp_stage){
   var slow_reply_time = 1000;
 
   var choice_side_fade_time = 350;
+  var quiz_pause_resp_time = 150;
+  var quiz_response_time = 2000;
+  var quiz_feedback_time = 350;
   //var post_response_static_time = 200;
 
   var accept_key = 'c';
@@ -135,6 +138,9 @@ var define_parameters = function(exp_stage){
     slow_reply_time: slow_reply_time,
     //var post_response_static_time: 200,
     choice_side_fade_time: choice_side_fade_time,
+    quiz_pause_resp_time: quiz_pause_resp_time,
+    quiz_response_time: quiz_response_time,
+    quiz_feedback_time: quiz_feedback_time,
 
     accept_key: accept_key,
     reject_key: reject_key,
