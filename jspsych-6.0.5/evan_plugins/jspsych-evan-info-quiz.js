@@ -55,7 +55,7 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
         jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
       }
 
-      //wait_for_time(par.slow_reply_time, end_trial);
+      wait_for_time(par.slow_reply_time, end_trial);
     }
 
     var wait_for_time = function(n_msec, next_fun){
@@ -87,10 +87,12 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
     var q_text_x = par.w/2;
 
     if (trial.use_outcome){ // 3 options
+      var myInds = [0,1,2];
+      var shuffledInds = jsPsych.randomization.repeat(myInds,1);
+
       var txt_q = 'Which banknote did you just collect?';
       place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
       var img_x_ctrs = [par.w/4, par.w/2, 3*par.w/4];
-
 
       // background boxes
       var box_width = 1*par.w/5;
@@ -103,8 +105,6 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
         var k = i+1;
         place_img_bkg(["bk" + k], box_x[i], box_y, box_width, box_height, par.good_color_vec[1], 0);
       }
-
-
 
       if (trial.use_image){
         var these_images = [trial.correct_image, trial.other_images[0], trial.other_images[1]];
@@ -120,12 +120,12 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
 
         for (var i = 0; i < 3; i++){
           place_img_bkg("info",bkg_x_vec[i], bkg_y, bkg_width, bkg_height ,par.img_bkg_color,1);
-          place_img(these_images[i], "info", img_x_vec[i],  img_y, img_width, img_height, 1);
+          place_img(these_images[shuffledInds[i]], "info", img_x_vec[i],  img_y, img_width, img_height, 1);
         }
       } else{
         var these_txts = [trial.correct_name, trial.other_names[0], trial.other_names[1]];
         for (var i = 0; i < 4; i++){
-          place_text(these_txts[i], 'Prompt', img_x_ctrs[i], par.h/2, par.text_font_size/2, 1, "Blue");
+          place_text(these_txts[shuffledInds[i]], 'Prompt', img_x_ctrs[i], par.h/2, par.text_font_size/2, 1, "Blue");
         }
       }
       // place key under it
@@ -138,55 +138,63 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
       }
       place_text('Key Press ', 'Prompt', par.w/2, p_y, par.text_font_size/3, 1, "White");
 
+    } else{ // use the choice stimuli
+      var myInds = [0,1,2,3];
+      var shuffledInds = jsPsych.randomization.repeat(myInds,1);
+
+      var txt_q = 'Which slot machine did you just play?';
+      place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
+      var img_x_ctrs = [par.w/5, 2*par.w/5, 3*par.w/5, 4*par.w/5];
+
+      // background boxes
+      var box_width = par.w/8;
+      var box_height = par.w/8;
+      var box_x = [img_x_ctrs[0] - box_width/2, img_x_ctrs[1] - box_width/2,
+                    img_x_ctrs[2] - box_width/2,   img_x_ctrs[3] - box_width/2,];
+      var box_y = par.h/2 - box_height/2;
+
+      for (var i = 0; i < 4; i++){
+        var k = i+1;
+        place_img_bkg(["bk" + k], box_x[i], box_y, box_width, box_height, par.good_color_vec[1], 0);
+      }
+
+      if (trial.use_image){
+        var these_images = [trial.correct_image, trial.other_images[0], trial.other_images[1], trial.other_images[2]];
+        console.log(these_images)
+
+        var img_width = 1.8*par.image_width/2;
+        var img_height = 1.8*par.image_height/2;
+
+        var img_x_vec = [img_x_ctrs[0] - img_width/2, img_x_ctrs[1] - img_width/2, img_x_ctrs[2] - img_width/2, img_x_ctrs[3] - img_width/2];
+        var img_y = par.h/2 - img_height/2;
+        for (var i = 0; i < 4; i++){
+          place_img(these_images[shuffledInds[i]], "info", img_x_vec[i],  img_y, img_width, img_height, 1);
+        }
+      } else{ // use text
+
+        var these_txts = [trial.correct_name, trial.other_names[0], trial.other_names[1], trial.other_names[2]];
+        for (var i = 0; i < 4; i++){
+          place_text(these_txts[shuffledInds[i]], 'Prompt', img_x_ctrs[i], par.h/2, par.text_font_size/2, 1, "Blue");
+        }
+
+
+          }
+
+          var key_vals = [1,2,3,4];
+
+        if (trial.use_image){ var txt_y= 25*par.h/40; var p_y = 26*par.h/40} else{var txt_y= 22.5*par.h/40; var p_y = 24*par.h/40};
+
+        for (var i = 0; i < 4; i++){
+          place_text(key_vals[i], 'Prompt', img_x_ctrs[i], txt_y, par.text_font_size/3, 1, "White");
+        }
+        place_text('Key Press ', 'Prompt', par.w/2, p_y, par.text_font_size/3, 1, "White");
+
     }
-
-    //if (trial.use_image){
-    //  var txt_q = 'How many points is this banknote worth?';
-    //  place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
-
-    //  place_img_bkg("info",par.w/2 - .8*par.img_bkg_width/2, 1.65*par.h/5 - .8*par.img_bkg_height/2, .8*par.img_bkg_width,.8*par.img_bkg_height,par.img_bkg_color,1);
-    //  place_img(trial.outcome_image, "info", par.w/2 - .8*par.image_width,  1.65*par.h/5 - .8*par.image_height/2, .8*par.image_width, .8*par.image_height, 1);
-
-    //} else{
-    //  var txt_q = 'How many points is this banknote worth?';
-    //  place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
-    //  place_text(trial.outcome_name, 'Prompt', q_text_x, 1.7*par.h/5, 2*par.text_font_size/3, 1, "Green");
-
-    //}
-
-    // place money
-    var rew_x = [par.w/5, 2*par.w/5, 3*par.w/5, 4*par.w/5];
-    var money_vals = [trial.outcome_val, trial.other_vals[0], trial.other_vals[1], trial.other_vals[2]];
-    var myInds = [0,1,2,3];
-    var shuffledInds = jsPsych.randomization.repeat(myInds,1);
-
-    // background boxes
-    var box_width = par.w/10;
-    var box_height = par.w/10;
-    var box_x = [rew_x[0] - box_width/2, rew_x[1] - box_width/2,
-                  rew_x[2] - box_width/2, rew_x[3] - box_width/2];
-    var box_y = par.h/2 - box_height/2;
-
-    for (var i = 0; i < 4; i++){
-      var k = i+1;
-      place_img_bkg(["bk" + k], box_x[i], box_y, box_width, box_height, par.good_color_vec[1], 0);
-    }
-
-    //for (var i = 0; i < 4; i++){
-    //  place_text(money_vals[shuffledInds[i]], 'Prompt', rew_x[i], par.h/2, par.text_font_size/2, 1, "Yellow");
-    //}
-
-    // place key under it
-    var key_vals = [1, 2, 3, 4];
-
-    for (var i = 0; i < 4; i++){
-      place_text(key_vals[i], 'Prompt', rew_x[i], 22.5*par.h/40, par.text_font_size/3, 1, "White");
-    }
-
-    place_text('Key Press ', 'Prompt', par.w/2, 23.5*par.h/40, par.text_font_size/3, 1, "White");
+    // trial use outcome...
 
 
-      var handle_response = function(info){
+
+    var handle_response = function(info){
         console.log('response heard')
         jsPsych.pluginAPI.clearAllTimeouts();
         if (response.key == null) {
@@ -199,26 +207,26 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
 
         if (shuffledInds[parseInt(choice_char)-1] == 0){
           correct = 1;
-          place_text('Correct!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red");
-          //wait_for_time(par.quiz_pause_resp_time,function(){place_text('CORRECT!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
-          //wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
+          //place_text('Correct!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red");
+          wait_for_time(par.quiz_pause_resp_time,function(){place_text('CORRECT!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
+          wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
         } else{
           correct = 0;
-          //wait_for_time(par.quiz_pause_resp_time,function(){place_text('WRONG!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
-          //wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
+          wait_for_time(par.quiz_pause_resp_time,function(){place_text('WRONG!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
+          wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
         }
       }
 
-      // set up the keypress
+      if (trial.use_outcome) {var valid_resopnses = ['1', '2', '3'];} else {var valid_responses = ['1', '2', '3', '4'];}
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: handle_response,
-          valid_responses: ['1', '2', '3', '4'],
+          valid_responses: valid_responses,
           rt_method: 'performance', // check this
           persist: false,
           allow_held_key: false
         });
 
-        wait_for_time(par.quiz_response_time, handle_slow_response);
+        //wait_for_time(par.quiz_response_time, handle_slow_response);
 
       var response = {
           rt: null,
@@ -235,9 +243,10 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
             d3.select('svg').remove()
 
             var trial_data = {
-              "outcome_image": trial.outcome_image,
-              "outcome_val": trial.outcome_val,
-              "outcome_name": trial.outcome_name,
+              "correct_image": trial.correct_image,
+              "correct_name": trial.correct_name,
+              "use_image": trial.use_image,
+              "use_outcome": trial.use_outcome,
               "correct": correct,
               "rt": response.rt,
               "key": response.key

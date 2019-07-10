@@ -64,8 +64,8 @@ var thing_names = ["Wallet", "Scissors", "Suitcase", "Key",
                   "Marbles", "Barrell", "Zebra"];
 
 
-
 var fractal_images = thing_images.slice(3,7);
+var fractal_names = thing_names.slice(3,7);
 
 
 
@@ -272,7 +272,6 @@ for (var tn = 0; tn < all_trials_shuff.length; tn++){
   all_trials_shuff[tn].data.trial_num = b+1;
 }
 
-
 var choice_trial = {
   type: 'evan-two-stim-choice',
   first_stage: 1,
@@ -305,6 +304,18 @@ var info_quiz2 = {
   other_images: [thing_images[1], thing_images[2]],
   correct_name: thing_names[0],
   other_names: [thing_names[1], thing_names[2]],
-  use_image: true,
+  use_image: false,
   use_outcome: true
+}
+
+
+// quiz on what bandit you saw?...
+var info_quiz2 = {
+  type: 'evan-info-quiz',
+  correct_image: fractal_images[0],
+  other_images: [fractal_images[1], fractal_images[2], fractal_images[3]],
+  correct_name: fractal_names[0],
+  other_names: [fractal_names[1], fractal_names[2], fractal_names[3]],
+  use_image: false,
+  use_outcome: false
 }
