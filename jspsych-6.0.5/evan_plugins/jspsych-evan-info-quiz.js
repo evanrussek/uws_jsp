@@ -107,6 +107,10 @@ jsPsych.plugins["evan-info-quiz"] = (function() {
       }
 
       if (trial.use_image){
+
+        if trial.use_last_trial -
+        jsPsych.data.get().last(1).values()[0]
+
         var these_images = [trial.correct_image, trial.other_images[0], trial.other_images[1]];
         var bkg_width = 1.3*par.img_bkg_width/2;
         var bkg_height = 1.3*par.img_bkg_height/2;
