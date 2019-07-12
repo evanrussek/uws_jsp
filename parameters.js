@@ -1,17 +1,19 @@
 var define_parameters = function(exp_stage){
 
-  var pre_trial_time = 800; // this is the ITI
+  // for practice...
+  var pre_trial_time = 500; // this is the ITI
   var info_fadein_time = 0;
-  var info_time = 3000;
+  var info_time = 800;
   var info_fadeout_time = 300;
   var post_info_time = 1000;
   var choice_fadein_time = 0;
-  var max_response_time = 400000;
-  var choice_fadeout_time = 300;
+  var max_response_time = 4000;
+  var choice_fadeout_time = 150;
   var post_choice_time = 600; // what is this??
   var outcome_fadein_time = 100;
-  var outcome_time = 800;
-  var outcome_fadeout_time = 300;
+  var outcome_time = 700;
+  var outcome_fadeout_time = 150;
+
   var slow_reply_time = 1000;
 
   var choice_side_fade_time = 350;
@@ -20,8 +22,8 @@ var define_parameters = function(exp_stage){
   var quiz_feedback_time = 350;
   //var post_response_static_time = 200;
 
-  var accept_key = 'c';
-  var reject_key = 'r';
+  var accept_key = '1';
+  var reject_key = '2';
 
   var parentDiv = document.body;
 

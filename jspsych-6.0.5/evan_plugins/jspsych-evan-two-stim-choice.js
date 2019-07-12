@@ -71,12 +71,12 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
     par.outcome_images= [trial.o1_image, trial.o2_image];
 
     var myCInds = [0,1];
-    par.shuffledCInds = jsPsych.randomization.repeat(myInds, 1);
+    par.shuffledCInds = jsPsych.randomization.repeat(myCInds, 1);
     par.choice_images = [trial.c1_image, trial.c2_image];
     par.p_o1 = [trial.p_o1_c1, trial.p_o1_c2];
 
-    var choose_left_key = 'a';
-    var choose_right_key = 'b';
+    var choose_left_key = '1';
+    var choose_right_key = '2';
 
     ///// set all timing parameters (in milliseconds)
     //// generally useful helper functions
@@ -90,7 +90,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
     // functions to assist with callbacks after multiple transitions are run
     var setupMT = function(sel){
       counter = sel.size(); // set a function
-      console.log('counter_start:' + counter)
+      //console.log('counter_start:' + counter)
     }
     var onMT = function(next_fun){
       counter--;
@@ -234,7 +234,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
     ////// master function which runs the whole trial
     var trial_master = function(trial_stage){
-      console.log('trial_stage: ' + trial_stage)
+      //console.log('trial_stage: ' + trial_stage)
 
       switch(trial_stage){
         // part 1 is stage 1
@@ -289,7 +289,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
             break;
           case 3:
             if (trial.last_stage < 3){var next_stage_number = 4} else{var next_stage_number = 3};
-            console.log('end of stage 2')
+            //console.log('end of stage 2')
             wait_for_time(par.post_choice_time,function(){trial_master(next_stage_number)});
         }
       }
@@ -352,7 +352,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
 
       var handle_response = function(info){
-        console.log('response heard')
+        //console.log('response heard')
 
         // clear timeout counting response time
         jsPsych.pluginAPI.clearAllTimeouts();
@@ -367,11 +367,6 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         var new_color = "blue";
         console.log('cc: '+choice_char)
 
-        var myCInds = [0,1];
-        par.shuffledCInds = jsPsych.randomization.repeat(myInds, 1);
-        par.choice_images = [trial.c1_image, trial.c2_image];
-        par.p_o1 = [trial.p_o1_c1, trial.p_o1_c2];
-
         if (choice_char == choose_left_key){
           var chosen_class = '.cL';
           var unchosen_class = '.cR';
@@ -383,7 +378,11 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           response.chosen_side = 2;}
         else{console.log('SURPRISE');}
 
+        console.log('chosen_side: ' + response.chosen_side)
+
+
         response.chosen_machine = par.shuffledCInds[response.chosen_side - 1] + 1; // this is 1 or 2
+        console.log('chosen_machine: ' + response.chosen_machine)
         correct_response = response.chosen_machine == trial.correct_machine;
 
         this_next_fun = function(){stage_2_master(2);}
@@ -400,12 +399,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         if (typeof keyboardListener !== 'undefined') {
           jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
         }
-        // call stage_2_master
 
-        // want to add something showing that their choice was registered? - maybe change the background color?
-        //this_next_fun = function(){stage_2_master(2);}
-        //wait_for_time(post_response_static_time, this_next_fun);
-        //stage_2_master(2);
 
       }
 
@@ -448,7 +442,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       response.choice = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
       var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
 
-      var this_p_o1 = par.p_o1[response.chosen_machine];
+      var this_p_o1 = par.p_o1[response.chosen_machine - 1];
 
       if (Math.random() < this_p_o1){
           var next_state = 'o1';
@@ -457,6 +451,9 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           var next_state = 'o2';
           outcome_reached = 2;
       }
+
+      console.log('p_o1:' + this_p_o1)
+      console.log('next_state:' + next_state)
 
       points_received = par.outcome_vals[outcome_reached - 1];
 
@@ -499,6 +496,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       d3.select('svg').remove()
 
       // add correctness answer
+      //console.log('correct: ' + correct_response)
 
       var trial_data = {
         "first_stage": trial.first_stage,

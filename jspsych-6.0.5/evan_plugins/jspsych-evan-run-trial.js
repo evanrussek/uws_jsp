@@ -57,7 +57,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       choice_image: {
         type: jsPsych.plugins.parameterType.FLOAT,
         default: undefined
-      },
+      }
     }
   }
 

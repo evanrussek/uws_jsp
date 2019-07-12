@@ -18,22 +18,29 @@ var all_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In18.png",
                   ];
 
+var thing_names = ["Wallet", "Scissors", "Suitcase", "Key",
+                    "Marbles", "Barrell", "Zebra"];
+
+
 var thing_images = all_images.slice(0,7);
 
-var thing_names = ["Wallet", "Scissors", "Suitcase", "Key",
-                  "Marbles", "Barrell", "Zebra"];
+var outcome_images = thing_images.slice(0,3);
+var outcome_names = thing_names.slice(0,3);
 
 
-var fractal_images = thing_images.slice(3,7);
-var fractal_names = thing_names.slice(3,7);
 
-var all_prob_o1 = [.2, .4, .6, .8];
 
+
+var choice_images = thing_images.slice(3,7);
+var choice_names = thing_names.slice(3,7);
+
+var all_prob_o1 = [0, .4, .6, 1];
+practice_trials = [];
 
 // let's start with A vs D
 
 
-var build_practice_trial_stg1 = function(choice_number,choice_image, p_o1){
+var build_practice_trial_stg1 = function(choice_number, p_o1){
   // add a prompt ....
   this_trial ={
     type: 'evan-run-trial',
@@ -51,8 +58,8 @@ var build_practice_trial_stg1 = function(choice_number,choice_image, p_o1){
     o2_image: thing_images[1],
     safe_image: thing_images[2],
     // this depends on the proability...
-    choice_image: fractal_images[choice_number-1],
-    choice_number: choice_number,
+    choice_image: choice_images[choice_number-1],
+    data: {choice_number: choice_number}
   }
 
   return this_trial;
@@ -64,14 +71,14 @@ var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_i
     type: 'evan-two-stim-choice',
     first_stage: 1,
     last_stage: 4,
-    o1_val: 10,
-    o2_val: 2,
-    p_o1_c1: .3,
-    p_o1_c2: .7,
+    o1_val: o1_val,
+    o2_val: o2_val,
+    p_o1_c1: 0,
+    p_o1_c2: 1,
     o1_image: thing_images[0],
     o2_image: thing_images[1],
-    c1_image: fractal_images[c1_number - 1],
-    c2_image: fractal_images[c2_number - 1],
+    c1_image: choice_images[c1_number - 1],
+    c2_image: choice_images[c2_number - 1],
     choice_prompt: true,
     info_prompt: true,
     correct_machine: better_im
@@ -89,65 +96,107 @@ var build_po_vec = function(n_trials, p_o1){
   return po_vec;
 }
 
+var gen_rand_choice_trial = function(c1, c2, which_better){
+  // constraints: c1 < c2
+  if (which_better == 1){
+    // reward should be on 1
+    choice_trial = build_choice_trial(c1,c2,0,10,1);
+  }else{
+    choice_trial = build_choice_trial(c1,c2,10,0,2);
+  }
+  return choice_trial;
+}
+// add some info checks to the practice trials
+
+function rand_gen_info_quiz(){
+
+  if (Math.random() < .5){
+    // quiz on outcome // need to access last outcome
+    var info_quiz = {
+      type: 'evan-info-quiz',
+      correct_image: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        return thing_images[data.outcome_reached-1];
+      },
+      other_images:  function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.outcome_reached-1;
+                      var cp_oi = [...outcome_images]; cp_oi.splice(rm_idx,1); return cp_oi; },
+      correct_name: function(){
+        var data = jsPsych.data.get().last(1).values()[0];
+        return thing_names[data.outcome_reached-1];
+      },
+      other_names: function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.outcome_reached-1;
+                      var cp_on = [...outcome_names]; cp_on.splice(rm_idx,1); return cp_on; },
+
+      use_image: (Math.random() < .5),
+      use_outcome: true
+    }
+  }else{
+    var info_quiz = {
+    // do it for choice
+    type: 'evan-info-quiz',
+    correct_image: function(){
+      var data = jsPsych.data.get().last(1).values()[0];
+      return choice_images[data.choice_number-1];
+    },
+    other_images:  function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.choice_number-1;
+                    var cp_oi = [...choice_images]; cp_oi.splice(rm_idx,1); return cp_oi; },
+    correct_name: function(){
+      var data = jsPsych.data.get().last(1).values()[0];
+      return choice_names[data.choice_number-1];
+    },
+    other_names: function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.choice_number-1;
+                    var cp_on = [...choice_names]; cp_on.splice(rm_idx,1); return cp_on; },
+
+    use_image: (Math.random() < .5), // random iamge or text
+    use_outcome: false
+  }
+  }
+  return info_quiz;
+}
+
 
 practice_A1 = [];
-a_trials_o1 = build_po_vec(10,all_prob_o1[0]);
+a_trials_o1 = build_po_vec(20,all_prob_o1[0]);
 // build a_trials
 for (var t = 0; t < a_trials_o1.length; t++){
   practice_A1.push(build_practice_trial_stg1(1, a_trials_o1[t]));
 }
 // shuffle them
 practice_D1 = [];
-d_trials_o1 = build_po_vec(10,all_prob_o1[3]);
+d_trials_o1 = build_po_vec(20,all_prob_o1[3]);
 // build a_trials
 for (var t = 0; t < a_trials_o1.length; t++){
-  practice_D1.push(build_practice_trial_stg1(4,fractal_images[3], d_trials_o1[t]));
+  practice_D1.push(build_practice_trial_stg1(4, d_trials_o1[t]));
 }
 
-// figure out whether correctness is correct
-choice_trial1 = build_choice_trial(1, 4, 10, 0, 1 + (1 < 4));
-choice_trial2 = build_choice_trial(1, 4, 0, 10, 1 + (1 < 4));
-choice_trial3 = build_choice_trial(1, 4, 10, 0, 1 + (1 < 4));
-choice_trial4 = build_choice_trial(1, 4, 10, 0, 1 + (1 < 4));
 
-choice_trials_AD = jsPsych.randomization.repeat([choice_trial1, choice_trial2, choice_trial3, choice_trial4],1);
-// some choice trials
+// figure out whether correctness is correct
+choice_trial1 = gen_rand_choice_trial(1, 4, 1);
+choice_trial2 = gen_rand_choice_trial(1, 4, 2);
 
 practice_trials = practice_A1.concat(practice_D1)
 practice_trials = jsPsych.randomization.repeat(practice_trials, 1);
 
-// add some info checks to the practice trials
-// pick a trial number
 
+// loop through practice trials, place a random info quiz in 25% of the spots
 
-tn = 8;
-
-// if rand < .5
-
-//if (Math.random() < .5){
-  // quiz on outcome // need to access last outcome
-//  var data = jsPsych.data.get().last(1).values()[0];
-  var info_quiz2 = {
-    type: 'evan-info-quiz',
-    on_start: function(){ data = jsPsych.data.get().last(1).values()[0] },
-    correct_image: thing_images[data.outcome_reached-1],
-    other_images: [thing_images[1], thing_images[2]],
-    correct_name: thing_names[data.outcome_reached-1],
-    other_names: [thing_names[1], thing_names[2]],
-    use_image: false,
-    use_outcome: true
+var t_new = 0;
+a = practice_trials.length;
+for (var t = 0; t < a; t++){
+  var t_new = t_new + 1;
+  if (Math.random() < 0.33){
+    practice_trials.splice(t_new,0,rand_gen_info_quiz())
+    console.log(t_new)
+    var t_new = t_new + 1;
   }
-//  }
-//}else{// quiz on choice
-//  console.log('hi')
-//}
+}
 
-practice_trials.splice(1, 0, info_quiz2);
-
-console.log(practice_trials)
-
-
-
-//choice_trials_AD = jsPsych.randomization.repeat([choice_trial1, choice_trial2, choice_trial3, choice_trial4],1);
-
-//practice_trials = practice_trials.concat(choice_trials_AD);
+//practice_trials.splice(1, 0, info_quiz2);
+pt_test = practice_trials;
+choice_trials_AD = jsPsych.randomization.repeat([choice_trial1, choice_trial1, choice_trial1, choice_trial1, choice_trial1, choice_trial2, choice_trial1, choice_trial2, choice_trial1, choice_trial2],1);
+practice_trials = practice_trials.concat(choice_trials_AD);
+//pt_test = choice_trials_AD;
+pt_test = practice_trials;
+// change choice trials to 1 vs 2...
+// monitor correct vs incorrect
+// place message for when transitioning to some choices...
