@@ -1,6 +1,6 @@
 
 jsPsych.plugins["evan-two-stim-choice"] = (function() {
-  /// problem::: choise is processed in outcome stage -- want it processed in choice stage
+  /// problem::: choiced is processed in outcome stage -- want it processed in choice stage
 
   var plugin = {};
 
