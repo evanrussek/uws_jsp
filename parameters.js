@@ -52,10 +52,13 @@ var define_parameters = function(exp_stage){
   var good_color_vec = ["#202030", "#5D556A", "#635C51", "#B0A990"];
 
 
+  var img_bkg_width = background_width/2;
+  var img_bkg_height = 2*background_height/7;
+
   var info_bkg_color = good_color_vec[0];
   var image_width = background_height/5;
   var image_height = background_height/5;
-  var image_x = w/2 - image_width;
+  var image_x = w/2 - image_width/2 - img_bkg_width/3;
   var image_y_vec =  [h/2 - image_height/2 - background_height/3,
                       h/2 - image_height/2,
                       h/2 - image_height/2 + background_height/3];
@@ -66,8 +69,6 @@ var define_parameters = function(exp_stage){
   //var myInds = [0,1,2];
   //var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
 
-  var img_bkg_width = background_width/2;
-  var img_bkg_height = 2*background_height/7;
 
   var img_bkg_color =  good_color_vec[2];
 
@@ -114,6 +115,18 @@ var define_parameters = function(exp_stage){
   var outcome_img_width = image_width;
   var outcome_img_x = image_x;
   var outcome_img_y = h/2 - outcome_img_width/2;
+
+
+  var f_outcome_img_bkg_height = 1.4*img_bkg_height;
+  var f_outcome_img_bkg_width = 1.4*img_bkg_width;
+  var f_outcome_img_bkg_x = w/2 - f_outcome_img_bkg_width/2;
+  var f_outcome_img_bkg_y = h/2 - f_outcome_img_bkg_height/2;
+
+  var f_outcome_img_height = 1.4*image_height;
+  var f_outcome_img_width = 1.4*image_width;
+  var f_outcome_img_x = image_x;
+  var f_outcome_img_y = h/2 - f_outcome_img_width/2;
+
 
   var outcome_text_x = text_x;
   var outcome_text_y = text_y_vec[1];
@@ -224,6 +237,18 @@ var define_parameters = function(exp_stage){
     outcome_img_width: outcome_img_width,
     outcome_img_x: outcome_img_x,
     outcome_img_y: outcome_img_y,
+
+
+
+    f_outcome_img_bkg_height: f_outcome_img_bkg_height,
+    f_outcome_img_bkg_width:  f_outcome_img_bkg_width,
+    f_outcome_img_bkg_x: f_outcome_img_bkg_x,
+    f_outcome_img_bkg_y: f_outcome_img_bkg_y,
+
+    f_outcome_img_height: f_outcome_img_height,
+    f_outcome_img_width: f_outcome_img_width,
+    f_outcome_img_x: f_outcome_img_x,
+    f_outcome_img_y: f_outcome_img_y,
 
     outcome_text_x: outcome_text_x,
     outcome_text_y: outcome_text_y,

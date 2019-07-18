@@ -203,7 +203,7 @@ var gen_two_stim_block = function(c1_number, c2_number){
   var a = practice_trials.length;
   for (var t = 0; t < a; t++){
     t_new = t_new + 1;
-    if (Math.random() < 0.33){
+    if (Math.random() < 0.25){
       practice_trials.splice(t_new,0,rand_gen_info_quiz())
       t_new = t_new + 1;
     }
@@ -238,5 +238,9 @@ var practice_14 = gen_two_stim_block(1,2);
 var pt_test = practice_14;
 
 // change choice trials to 1 vs 2...
+// add prompts...
 // monitor correct vs incorrect
-// place message for when transitioning to some choices... and between blocks...
+// place message for when transitioning to some choices... and between blocks... make message self paced???
+
+// make money on outcome screen larger...
+// group outcomes as the same...

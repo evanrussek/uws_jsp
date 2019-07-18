@@ -150,22 +150,22 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
     var place_outcomes = function(opacity){
       // put up the accept outcome 1  (just 1 for now)outcome_img_height
-      place_img_bkg("ob",par.outcome_img_bkg_x,par.outcome_img_bkg_y,par.outcome_img_bkg_width,par.outcome_img_bkg_height,par.img_bkg_color,opacity);
-      place_img(trial.o1_image, "o1", par.outcome_img_x, par.outcome_img_y,
-                    par.outcome_img_width, par.outcome_img_height,opacity);
+      place_img_bkg("ob",par.f_outcome_img_bkg_x,par.f_outcome_img_bkg_y,par.f_outcome_img_bkg_width,par.f_outcome_img_bkg_height,par.img_bkg_color,opacity);
+      place_img(trial.o1_image, "o1", par.f_outcome_img_x, par.f_outcome_img_y,
+                    par.f_outcome_img_width, par.f_outcome_img_height,opacity);
       if (trial.show_money_val){place_reward(trial.o1_val, "o1",
                   par.outcome_text_x, par.outcome_text_y, par.outcome_text_font_size,opacity)};
 
       // accept outcome 2
-      place_img(trial.o2_image, "o2", par.outcome_img_x,
-                  par.outcome_img_y, par.outcome_img_width, par.outcome_img_height,opacity);
+      place_img(trial.o2_image, "o2", par.f_outcome_img_x,
+                  par.f_outcome_img_y, par.f_outcome_img_width, par.f_outcome_img_height,opacity);
 
       if (trial.show_money_val){place_reward(trial.o2_val, "o2", par.outcome_text_x,
                     par.outcome_text_y, par.outcome_text_font_size,opacity)};
 
       // reject outcome
       place_img(trial.safe_image, "safe", par.outcome_img_x, par.outcome_img_y,
-            par.outcome_img_width, par.outcome_img_height,opacity);
+            par.f_outcome_img_width, par.f_outcome_img_height,opacity);
       if (trial.show_money_val){place_reward(trial.safe_val, "safe",
               par.outcome_text_x, par.outcome_text_y, par.outcome_text_font_size,opacity)};
     }
