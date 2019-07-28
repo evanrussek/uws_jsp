@@ -1,9 +1,9 @@
 var define_parameters = function(exp_stage){
 
-  // for practice...
+  // for practice... seperate these for practice vs the regular game
   var pre_trial_time = 500; // this is the ITI
   var info_fadein_time = 0;
-  var info_time = 1500;
+  var info_time = 3000;
   var info_fadeout_time = 300;
   var post_info_time = 1000;
   var choice_fadein_time = 0;
@@ -49,6 +49,9 @@ var define_parameters = function(exp_stage){
   var svg_color = d3.rgb(150, 150, 150);
   var background_width = 2*w/4;
   var background_height = 3*h/4;
+  var stg_bkg_x = w/2 - background_width/2;
+  var stg_bkg_y = h/2 - background_height/2;
+
   var good_color_vec = ["#202030", "#5D556A", "#635C51", "#B0A990"];
 
 
@@ -58,7 +61,7 @@ var define_parameters = function(exp_stage){
   var info_bkg_color = good_color_vec[0];
   var image_width = background_height/5;
   var image_height = background_height/5;
-  var image_x = w/2 - image_width/2 - img_bkg_width/3;
+  var image_x = w/2 - img_bkg_width/4 - image_width/2;
   var image_y_vec =  [h/2 - image_height/2 - background_height/3,
                       h/2 - image_height/2,
                       h/2 - image_height/2 + background_height/3];
@@ -72,7 +75,7 @@ var define_parameters = function(exp_stage){
 
   var img_bkg_color =  good_color_vec[2];
 
-  var img_bkg_x = w/2 - background_width/2 + background_width/4;
+  var img_bkg_x = w/2 - img_bkg_width/2;
   var img_bkg_y_vec = [image_y_vec[0] + image_height/2 - img_bkg_height/2,
                       image_y_vec[1] + image_height/2 - img_bkg_height/2,
                       image_y_vec[2] + image_height/2 - img_bkg_height/2];
@@ -132,8 +135,6 @@ var define_parameters = function(exp_stage){
   var outcome_text_y = text_y_vec[1];
   var outcome_text_font_size = text_font_size;
 
-  var stg_bkg_x = w/2 - background_width/2;
-  var stg_bkg_y = h/2 - background_height/2;
 
   // instruction page 2 parametesr
 

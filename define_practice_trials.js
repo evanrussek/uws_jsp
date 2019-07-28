@@ -29,8 +29,6 @@ var outcome_names = thing_names.slice(0,3);
 
 
 
-
-
 var choice_images = thing_images.slice(3,7);
 var choice_names = thing_names.slice(3,7);
 
@@ -87,12 +85,13 @@ var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_i
 
 }
 
-var build_text_trial = function(line_1,line_2,line_3){
+var build_text_trial = function(line_1,line_2,line_3, wait_for_press){
   var text_trial = {
     type: 'evan-display-text',
     line_1: line_1,
     line_2: line_2,
-    line_3: line_3
+    line_3: line_3,
+    wait_for_press: wait_for_press
   }
   return text_trial;
 }
@@ -106,14 +105,24 @@ var build_po_vec = function(n_trials, p_o1){
   return po_vec;
 }
 
-var gen_rand_choice_trial = function(c1, c2, which_better){
+var gen_rand_choice_trial = function(c1, c2, which_better, gain){
   // constraints: c1 < c2
-  if (which_better == 1){
-    // reward should be on 1
-    choice_trial = build_choice_trial(c1,c2,0,10,1);
-  }else{
-    choice_trial = build_choice_trial(c1,c2,10,0,2);
+  if (gain == 1){
+    if (which_better == 1){
+      // reward should be on 1 // c2 leads to o1 more than o1 does (confusing)
+      choice_trial = build_choice_trial(c1,c2,0,10,1);
+    }else{
+      choice_trial = build_choice_trial(c1,c2,10,0,2);
+    }
+  } else{
+    if (which_better == 1){
+      // reward should be on 1
+      choice_trial = build_choice_trial(c1,c2,-10,0,1);
+    }else{
+      choice_trial = build_choice_trial(c1,c2,0,-10,2);
+    }
   }
+
   return choice_trial;
 }
 // add some info checks to the practice trials
@@ -168,8 +177,11 @@ function rand_gen_info_quiz(){
 var gen_two_stim_block = function(c1_number, c2_number){
 
   // build 10 c1 only trials
-  var start_block_text1 = "You'll now play the " + choice_names[c1_number - 1] + " and the " +
-                              choice_names[c2_number - 1] + " slot machines.";
+  // add a prompt and self pace this...
+  // need more time with the choice info
+  // also the stimuli placement is messed up slightly
+  var c1_block_text1 = "You'll now play the " + choice_names[c1_number - 1] + " slot machine,";
+  var c2_block_text1 = "You'll now play the " + choice_names[c2_number - 1] + " slot machine.";
   var start_block_text2 = "For each game, press 1 to play the machine.";
   var start_block_text3 = "Please pay attention! There will be checks.";
 
@@ -177,6 +189,7 @@ var gen_two_stim_block = function(c1_number, c2_number){
   var pre_choice_text1 = "You'll now make some choices between the two machines to earn points!";
   var pre_choice_text2 = "Press 1 to select the LEFT machine and 2 to select the RIGHT machine.";
   var pre_choice_text3 = "Please pay attention to the number of points for each outcome!";
+  // add self paced prompt to this...
 
   var practice_c1 = [];
   // 10 trials of 1
@@ -186,6 +199,9 @@ var gen_two_stim_block = function(c1_number, c2_number){
     practice_c1.push(build_practice_trial_stg1(c1_number, c1_trials_o1[t]));
   }
 
+  // shuffle these
+  practice_c1 = jsPsych.randomization.repeat(practice_c1, 1);
+
   // build 10 c2 trials
   var practice_c2 = [];
   var c2_trials_o1 = build_po_vec(10,all_prob_o1[c2_number - 1]);
@@ -194,35 +210,53 @@ var gen_two_stim_block = function(c1_number, c2_number){
     practice_c2.push(build_practice_trial_stg1(c2_number, c2_trials_o1[t]));
   }
 
-  // combine and shuffle c1 and c2 trials
-  var practice_trials = practice_c1.concat(practice_c2)
-  practice_trials = jsPsych.randomization.repeat(practice_trials, 1);
+  practice_c2 = jsPsych.randomization.repeat(practice_c2, 1);
+
+
+  //practice_trials = jsPsych.randomization.repeat(practice_trials, 1);
 
   // add in checks following some percent of practice trials
-  var t_new = 0;
-  var a = practice_trials.length;
-  for (var t = 0; t < a; t++){
-    t_new = t_new + 1;
+  var t_new1 = 0;
+  var t_new2 = 0;
+  var a = practice_c1.length;
+  for (var t = 1; t < a; t++){
+    t_new1 = t_new1 + 1;
+    t_new2 = t_new2 + 1;
     if (Math.random() < 0.25){
-      practice_trials.splice(t_new,0,rand_gen_info_quiz())
-      t_new = t_new + 1;
+      practice_c1.splice(t_new1,0,rand_gen_info_quiz())
+      t_new1 = t_new1 + 1;
+    }
+    if (Math.random() < 0.25){
+      practice_c2.splice(t_new2,0,rand_gen_info_quiz())
+      t_new2 = t_new2 + 1;
     }
   }
 
-  practice_trials.unshift(build_text_trial(start_block_text1,start_block_text2,start_block_text3));
+  practice_c1.unshift(build_text_trial(c1_block_text1,start_block_text2,start_block_text3, true));
+  practice_c2.unshift(build_text_trial(c2_block_text1,start_block_text2,start_block_text3, true));
+
+
+  // combine and shuffle c1 and c2 trials
+  if (Math.random() < .5){
+    var practice_trials = practice_c1.concat(practice_c2);
+  } else{
+    var practice_trials = practice_c2.concat(practice_c1);
+  }
+
+  //practice_trials.unshift(build_text_trial(start_block_text1,start_block_text2,start_block_text3));
 
   // add choice trials at the end of the block
-  var choice_trial_c1_better = gen_rand_choice_trial(c1_number, c2_number, 1);
-  var choice_trial_c2_better = gen_rand_choice_trial(c1_number, c2_number, 2);
+  // add some where one of these is worse?
+  var choice_trial_c1_better_g = gen_rand_choice_trial(c1_number, c2_number, 1,true);
+  var choice_trial_c2_better_g = gen_rand_choice_trial(c1_number, c2_number, 2, true);
+  var choice_trial_c1_better_l = gen_rand_choice_trial(c1_number, c2_number, 1,false);
+  var choice_trial_c2_better_l = gen_rand_choice_trial(c1_number, c2_number, 2, false);
 
+  // these are all framed in terms of approach, should we frame some in terms of avoid....
+  var choice_trials = jsPsych.randomization.repeat([choice_trial_c1_better_g, choice_trial_c2_better_g,
+                                                  choice_trial_c1_better_l, choice_trial_c2_better_l],3);
 
-  // these are all framed in terms of approach, should we frame some in terms of avoid.... yes!
-  var choice_trials = jsPsych.randomization.repeat([choice_trial_c1_better, choice_trial_c1_better,
-                                                  choice_trial_c1_better, choice_trial_c1_better,
-                                                  choice_trial_c2_better, choice_trial_c2_better,
-                                                  choice_trial_c2_better, choice_trial_c2_better],1);
-
-  choice_trials.unshift(build_text_trial(pre_choice_text1,pre_choice_text2,pre_choice_text3));
+  choice_trials.unshift(build_text_trial(pre_choice_text1,pre_choice_text2,pre_choice_text3,true));
 
 
    var practice_block = practice_trials.concat(choice_trials);
@@ -233,10 +267,10 @@ var gen_two_stim_block = function(c1_number, c2_number){
 
 var practice_14 = gen_two_stim_block(1,2);
 
-//var pt_test = [build_text_trial('hello!','HI', 'thats all')]
+//var pt_test = [build_text_trial('hello!','HI', 'thats all', true)]
 
-var pt_test = practice_14;
-
+//var pt_test = practice_14;
+var pt_test = [gen_rand_choice_trial(1, 4, 1)];
 // change choice trials to 1 vs 2...
 // add prompts...
 // monitor correct vs incorrect

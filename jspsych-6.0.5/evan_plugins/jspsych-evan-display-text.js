@@ -20,8 +20,13 @@ jsPsych.plugins["evan-display-text"] = (function() {
     line_3: {
       type: jsPsych.plugins.parameterType.STRING,
       default: ''
+    },
+    wait_for_press: {
+      type: jsPsych.plugins.parameterType.BOOL,
+      default: false
     }
-}}
+  }
+}
 
   plugin.trial = function(display_element, trial) {
 
@@ -50,7 +55,6 @@ jsPsych.plugins["evan-display-text"] = (function() {
     place_text(trial.line_2, 'text', par.w/2, par.h/2, par.text_font_size/2, 1, "White");
     place_text(trial.line_3, 'text', par.w/2, par.h/2 + par.text_font_size, par.text_font_size/2, 1, "White");
 
-
     ///////////////////////////////////////
 
 
@@ -63,8 +67,39 @@ jsPsych.plugins["evan-display-text"] = (function() {
       line_2: trial.line2,
       line_3: trial.line3
     };
+    var valid_responses = ['4'];
 
-    wait_for_time(par.text_info_prac_time,function(){ d3.select('svg').remove(); jsPsych.finishTrial(trial_data);});
+    if (trial.wait_for_press){
+      // set up max response time?
+      var txt_y =  par.h  - par.stg_bkg_y;
+      var prompt = 'Press 4 to continue'
+      place_text(prompt, "prompt", par.w/2, txt_y, par.text_font_size/2, 1, "White")
+
+      var handle_response = function(){
+        jsPsych.pluginAPI.clearAllTimeouts();
+
+        //if (response.key == null) {
+        //    response = info;
+        //}
+
+        // kill keyboard listeners
+        if (typeof keyboardListener !== 'undefined') {
+          jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+        }
+
+        d3.select('svg').remove(); jsPsych.finishTrial(trial_data);
+      }
+
+      var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
+          callback_function: handle_response,
+          valid_responses: valid_responses,
+          rt_method: 'performance', // check this
+          persist: false,
+          allow_held_key: false
+        });
+    }else{
+      wait_for_time(par.text_info_prac_time,function(){ d3.select('svg').remove(); jsPsych.finishTrial(trial_data);});
+    }
 
 
   };
