@@ -70,13 +70,7 @@ var block2_node = {
   data: {block: 'block2'}
 }
 
-// returns button pressed
-var button_trial = {
-    type: 'html-button-response',
-    stimulus: '<p>Which Blocko Do you want to do?</p>',
-    choices: ['First Block', 'Second Block', 'Neither'],
-    prompt: "<p>Is this activity healthy or unhealthy?</p>"
-};
+
 
 var inst_trial = {
     type: 'evan-instructions',
@@ -107,8 +101,8 @@ timeline = [full_screen].concat(pt_test);
     timeline: timeline,
     show_preload_progress_bar: false,
     on_finish: function() {
-      console.log('done')
-      //jsPsych.data.get().localSave('csv','test_res.csv');
+      //console.log('done')
+      jsPsych.data.get().localSave('csv','test_res.csv');
     //on_finish: saveData
   }
   });

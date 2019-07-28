@@ -332,9 +332,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
         var choice_char = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(response.key);
         response.choice = choice_char;
-        if (choice_char == trial.accept_key){
+        if (choice_char == par.accept_key){
           response.accept = 1;
-        } else if (choice_char == trial.reject_key){
+        } else if (choice_char == par.reject_key){
           response.accept = 0;
         }
 

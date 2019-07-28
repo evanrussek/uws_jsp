@@ -30,6 +30,13 @@ jsPsych.plugins["evan-display-text"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
+    // define the response that we'll append
+    var response = {
+        rt: null,
+        key: null
+      };
+
+
     var wait_for_time = function(n_msec, next_fun){
       // wait n_msec and then call next function
       jsPsych.pluginAPI.setTimeout(function() {
@@ -60,13 +67,7 @@ jsPsych.plugins["evan-display-text"] = (function() {
 
     // put up the svg
 
-    // data saving
-    var trial_data = {
-      // add time to this...
-      line_1: trial.line1,
-      line_2: trial.line2,
-      line_3: trial.line3
-    };
+
     var valid_responses = ['4'];
 
     if (trial.wait_for_press){
@@ -75,12 +76,22 @@ jsPsych.plugins["evan-display-text"] = (function() {
       var prompt = 'Press 4 to continue'
       place_text(prompt, "prompt", par.w/2, txt_y, par.text_font_size/2, 1, "White")
 
-      var handle_response = function(){
+      var handle_response = function(info){
         jsPsych.pluginAPI.clearAllTimeouts();
 
-        //if (response.key == null) {
-        //    response = info;
-        //}
+        if (response.key == null) {
+            response = info;
+        }
+
+        // data saving
+        var trial_data = {
+          // add time to this...
+          line_1: trial.line_1,
+          line_2: trial.line_2,
+          line_3: trial.line_3,
+          rt: response.rt
+        };
+
 
         // kill keyboard listeners
         if (typeof keyboardListener !== 'undefined') {

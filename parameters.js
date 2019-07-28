@@ -127,7 +127,7 @@ var define_parameters = function(exp_stage){
 
   var f_outcome_img_height = 1.4*image_height;
   var f_outcome_img_width = 1.4*image_width;
-  var f_outcome_img_x = image_x;
+  var f_outcome_img_x =  w/2 - f_outcome_img_bkg_width/4 - f_outcome_img_width/2;
   var f_outcome_img_y = h/2 - f_outcome_img_width/2;
 
 

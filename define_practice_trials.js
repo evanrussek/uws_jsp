@@ -18,8 +18,8 @@ var all_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
                     "Stimuli/MEG_Stimuli/intermediate/In18.png",
                   ];
 
-var thing_names = ["Wallet", "Scissors", "Suitcase", "Key",
-                    "Marbles", "Barrell", "Zebra"];
+var thing_names = ["WALLET", "SCISSORS", "SUITCASE", "KEY",
+                    "MARBLES", "BARRELL", "ZEBRA"];
 
 
 var thing_images = all_images.slice(0,7);
@@ -57,7 +57,7 @@ var build_practice_trial_stg1 = function(choice_number, p_o1){
     safe_image: thing_images[2],
     // this depends on the proability...
     choice_image: choice_images[choice_number-1],
-    data: {choice_number: choice_number}
+    data: {choice_number: choice_number, phase: 'TRAIN OBSERVE'}
   }
 
   return this_trial;
@@ -79,7 +79,8 @@ var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_i
     c2_image: choice_images[c2_number - 1],
     choice_prompt: true,
     info_prompt: true,
-    correct_machine: better_im
+    correct_machine: better_im,
+    data: {phase: 'TRAIN CHOICE', C1: c1_number, C2: c2_number}
   }
   return choice_trial;
 
@@ -91,7 +92,8 @@ var build_text_trial = function(line_1,line_2,line_3, wait_for_press){
     line_1: line_1,
     line_2: line_2,
     line_3: line_3,
-    wait_for_press: wait_for_press
+    wait_for_press: wait_for_press,
+    data: {phase: 'TRAIN INFO'}
   }
   return text_trial;
 }
@@ -180,15 +182,15 @@ var gen_two_stim_block = function(c1_number, c2_number){
   // add a prompt and self pace this...
   // need more time with the choice info
   // also the stimuli placement is messed up slightly
-  var c1_block_text1 = "You'll now play the " + choice_names[c1_number - 1] + " slot machine,";
+  var c1_block_text1 = "You'll now play the " + choice_names[c1_number - 1] + " slot machine.";
   var c2_block_text1 = "You'll now play the " + choice_names[c2_number - 1] + " slot machine.";
   var start_block_text2 = "For each game, press 1 to play the machine.";
   var start_block_text3 = "Please pay attention! There will be checks.";
 
   // build 10 c1 only trials
-  var pre_choice_text1 = "You'll now make some choices between the two machines to earn points!";
+  var pre_choice_text1 = "You'll now make some choices between the " + choice_names[c1_number - 1] + " and the " + choice_names[c2_number - 1] + " machines to earn points!";
   var pre_choice_text2 = "Press 1 to select the LEFT machine and 2 to select the RIGHT machine.";
-  var pre_choice_text3 = "Please pay attention to the number of points for each outcome!";
+  var pre_choice_text3 = "Before each choice, you'll be shown the number of points for each banknote. Pay attention!"
   // add self paced prompt to this...
 
   var practice_c1 = [];
@@ -265,12 +267,21 @@ var gen_two_stim_block = function(c1_number, c2_number){
 
 }
 
-var practice_14 = gen_two_stim_block(1,2);
 
-//var pt_test = [build_text_trial('hello!','HI', 'thats all', true)]
+var pairs = [[1, 2], [1, 3], [1,4], [2,3], [2,4], [3,4]];
+var part1 = jsPsych.randomization.shuffle(pairs,1);
+var part2 = jsPsych.randomization.shuffle(pairs,1);
+var parts = part1.concat(part2);
+var practice_round = [];
+for (i = 0; i<12; i++){
+  practice_round = practice_round.concat(gen_two_stim_block(parts[i][0], parts[i][1]));
+}
 
+//var practice_14 = gen_two_stim_block(1,4);
+
+var pt_test = practice_round;
 //var pt_test = practice_14;
-var pt_test = [gen_rand_choice_trial(1, 4, 1)];
+//var pt_test = [gen_rand_choice_trial(1, 4, 1)];
 // change choice trials to 1 vs 2...
 // add prompts...
 // monitor correct vs incorrect
