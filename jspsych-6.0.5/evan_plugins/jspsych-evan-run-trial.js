@@ -57,6 +57,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       choice_image: {
         type: jsPsych.plugins.parameterType.FLOAT,
         default: undefined
+      },
+      exp_stage: {
+        type: jsPsych.plugins.parameterType.STRING,
+        default: "trial"
       }
     }
   }
@@ -72,7 +76,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     //par = define_parameters('trial', trial.o1_image, trial.o2_image,
     //          trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);
 
-    par = define_parameters('trial')
+    par = define_parameters(trial.exp_stage);
 
     par.outcome_images = [trial.o1_image, trial.o2_image, trial.safe_image];
     par.outcome_vals = [trial.o1_val, trial.o2_val, trial.safe_val];
@@ -483,8 +487,13 @@ jsPsych.plugins["evan-run-trial"] = (function() {
   // define the response that we'll append
   var response = {
       rt: null,
-      key: null
+      key: null,
+      choice:null,
+      accept:null
     };
+
+  var outcome_reached = null;
+  var points_received = null;
 
 
     //// start the trial -  place everything

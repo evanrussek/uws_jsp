@@ -13,6 +13,7 @@
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-info-quiz.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-two-stim-choice.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-display-text.js"></script>
+    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-reward-quiz.js"></script>
 
     <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link rel='stylesheet' type='text/css' href='default_style.css'>
@@ -32,8 +33,8 @@
   </script>
 
   <script type="text/javascript" src="parameters.js"></script>
-  <script type="text/javascript" src="define_trials.js"></script>
   <script type="text/javascript" src="define_practice_trials.js"></script>
+  <script type="text/javascript" src="define_trials.js"></script>
 
 
 
@@ -51,48 +52,8 @@
   };
 
 
-  /* define welcome message trial */
-  var welcome = {
-    type: "html-keyboard-response",
-    stimulus: "Welcome to the experiment. Press any key to begin."
-  };
-
-var exp_block1_trials = all_trials_shuff.slice(0,100);
-var exp_block2_trials = all_trials_shuff.slice(3,6);
-
-var block1_node = {
-  timeline: exp_block1_trials,
-  data: {block: 'block1'}
-}
-
-var block2_node = {
-  timeline: exp_block2_trials,
-  data: {block: 'block2'}
-}
-
-
-
-var inst_trial = {
-    type: 'evan-instructions',
-    pages: [
-        'Welcome to the experiment. Click next to begin.',
-        'This is the second page of instructions.',
-        'This is the final page.'
-    ],
-    show_clickable_nav: true,
-    o1_image: thing_images[0], // set per subject, using subject number -- need to counterbalance this...
-    o2_image: thing_images[1], //
-    safe_image: thing_images[2],
-    o1_name: thing_names[0],
-    o2_name:  thing_names[1],
-    safe_name: thing_names[2],
-    // this depends on the proability...
-    choice_image: fractal_images[1] // each cho
-}
-
-
 //timeline = [full_screen, block1_node, block2_node];
-timeline = [full_screen].concat(pt_test);
+timeline = [full_screen].concat(main_task);
 //timeline = [full_screen button_trial];
 //timeline = [full_screen,inst_trial];
 //timeline = [full_screen, choice_trial, choice_trial, choice_trial, choice_trial];

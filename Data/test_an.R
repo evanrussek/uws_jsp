@@ -1,4 +1,5 @@
-setwd("/Users/evanrussek/uws_jsp/data")
+#setwd("/Users/evanrussek/uws_jsp/data")
+setwd("C:/Users/erussek/uws_jsp/data")
 
 library(dplyr)
 library(tidyr)
@@ -31,21 +32,42 @@ cdf <- cdf %>%
                                   trial > ntrials/2 ~2
         ))
 
+# group by game and rep number
 cdf_summ1 <- cdf %>%
   group_by(CN, rep_number) %>%
-  summarize_at(vars(correct, rt), funs(mean(.,na.rm=TRUE)))
+  summarise(avg_crt = mean(correct), avg_rt = mean(rt))
 
-corr_plot <- ggplot(cdf_summ1, aes(x=rep_number, y = correct, group = CN)) +
+# print these tables
+cdf_summ1 %>% select(-avg_rt) %>% spread(rep_number, avg_crt)
+cdf_summ1 %>% select(-avg_crt) %>% spread(rep_number, avg_rt)
+
+
+corr_plot <- ggplot(cdf_summ1, aes(x=rep_number, y = avg_crt, group = CN)) +
   geom_point() + geom_line() + facet_wrap(~ CN) + ylim(0,1)
+corr_plot
 
-rt_plot <- ggplot(cdf_summ1, aes(x=rep_number, y = rt, group = CN)) +
+rt_plot <- ggplot(cdf_summ1, aes(x=rep_number, y = avg_rt, group = CN)) +
   geom_point() + geom_line() + facet_wrap(~ CN) + ylim(800,3000)
+rt_plot
 
 ggsave("plots/evan_pct_corr.png", corr_plot)
 ggsave("plots/evan_rt.png", rt_plot)
 
 
+# group by game and gain/loss
+cdf_summ2 <- cdf %>%
+  group_by(CN, gain) %>%
+  summarise(avg_crt = mean(correct), avg_rt = mean(rt))
 
+corr_plot2 <- ggplot(cdf_summ2, aes(x=gain, y = avg_crt, group = CN)) +
+  geom_point() + geom_line() + facet_wrap(~ CN) + ylim(0,1)
+corr_plot2
 
+rt_plot2 <- ggplot(cdf_summ2, aes(x=gain, y = avg_rt, group = CN)) +
+  geom_point() + geom_line() + facet_wrap(~ CN)+ ylim(700,2500)
+rt_plot2
+
+ggsave("plots/evan_pct_corr_gain.png", corr_plot2)
+ggsave("plots/evan_rt_gain.png", rt_plot2)
 
   

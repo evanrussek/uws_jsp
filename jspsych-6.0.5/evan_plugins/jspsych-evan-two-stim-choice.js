@@ -64,7 +64,8 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    par = define_parameters('trial');
+    par = define_parameters('train');
+
     var myInds = [0,1];
     par.shuffledInds = jsPsych.randomization.repeat(myInds, 1);
     par.outcome_vals = [trial.o1_val, trial.o2_val];
@@ -174,6 +175,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
     // place choice stims
     var place_choice = function(opacity, show_prompt){
+
       // place the stage background
       place_stg_bkg("choice_stim choice_bkg",par.choice_bkg_color,opacity);
 
@@ -457,6 +459,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
       points_received = par.outcome_vals[outcome_reached - 1];
 
+
       sel_text = '.ob,.'+next_state;
 
       this_next_fun = function(){
@@ -515,7 +518,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         "chosen_machine": response.chosen_machine,
         "outcome_reached": outcome_reached,
         "outcome_im": par.outcome_images[outcome_reached - 1],
-        "points_recieved": points_received,
+        "points_received": points_received,
         "rt": response.rt,
         "correct_response": correct_response
       };
@@ -526,8 +529,15 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
     // define the response that we'll append
     var response = {
         rt: null,
-        key: null
+        key: null,
+        key_press_num: null,
+        chosen_side: null,
+        chosen_machine: null,
       };
+      var outcome_reached = null;
+      var points_received = null;
+      var correct_response = null;
+
 
     //place_info(1, true)
     //place_choice(1, true)

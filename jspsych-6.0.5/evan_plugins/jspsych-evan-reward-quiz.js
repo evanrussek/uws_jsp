@@ -84,6 +84,8 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
     var q_text_x = par.w/2;
 
     if (trial.use_image){
+      console.log("images")
+      console.log(trial.outcome_image)
       var txt_q = 'How many points is this banknote worth?';
       place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
 
@@ -91,6 +93,8 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
       place_img(trial.outcome_image, "info", par.w/2 - .8*par.image_width,  1.65*par.h/5 - .8*par.image_height/2, .8*par.image_width, .8*par.image_height, 1);
 
     } else{
+      console.log("text")
+      console.log(trial.outcome_name)
       var txt_q = 'How many points is this banknote worth?';
       place_text(txt_q, 'Prompt', q_text_x, q_text_y, par.text_font_size/2, 1, "White");
       place_text(trial.outcome_name, 'Prompt', q_text_x, 1.7*par.h/5, 2*par.text_font_size/3, 1, "Green");
@@ -142,7 +146,6 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
 
         if (shuffledInds[parseInt(choice_char)-1] == 0){
           correct = 1;
-          place_text('Correct!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red");
           wait_for_time(par.quiz_pause_resp_time,function(){place_text('CORRECT!', 'Prompt', par.w/2, 29*par.h/40, par.text_font_size, 1, "Red")})
           wait_for_time(par.quiz_pause_resp_time + par.quiz_feedback_time,end_trial)
         } else{
@@ -197,7 +200,7 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
     };
 
     // end trial
-    jsPsych.finishTrial(trial_data);
+    //jsPsych.finishTrial(trial_data);
   };
 
   return plugin;
