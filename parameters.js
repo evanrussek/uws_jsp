@@ -3,27 +3,36 @@ var define_parameters = function(exp_stage){
   // figure out what should differentiate these...
 
   // maybe don't
+  var randomize_info = false;
+  var randomize_info_y = true;
+  var randomize_info_x = false;
 
+  //var info_time = 5000;
+  var info_pos = 2;
   // for practice... seperate these for practice vs the regular game
-  var pre_trial_time = 750; // this is the ITI
   var info_fadein_time = 0;
   var info_fadeout_time = 300;
   var choice_fadein_time = 0;
   // for practice, this can go for a while...
 
   if (exp_stage == 'trial'){
+    var pre_trial_time = 1000; // this is the ITI
     var info_time = 5000;
+  //  var info_time = 10000000000;
     var post_info_time = 1000;
-    var max_response_time = 5000;
+    var max_response_time = 7000;
+    var outcome_time = 750;
   }else{
+    var pre_trial_time = 750; // this is the ITI
     var info_time = 3000;
     var post_info_time = 600;
-    var max_response_time = 5000; // limiting choice time here.
+    var max_response_time = 5000;
+    var outcome_time = 750;
+ // limiting choice time here.
   }
   var choice_fadeout_time = 150;
   var post_choice_time = 600;
   var outcome_fadein_time = 100;
-  var outcome_time = 500;
   var outcome_fadeout_time = 150;
   var text_info_prac_time = 4000;
   var slow_reply_time = 1000;
@@ -68,6 +77,9 @@ var define_parameters = function(exp_stage){
   var img_bkg_width = background_width/2;
   var img_bkg_height = 2*background_height/7;
 
+  var img_bkg_width2 = 9*background_width/20;
+  var img_bkg_height2 = 2*background_height/7;
+
   var info_bkg_color = good_color_vec[0];
   var image_width = background_height/5;
   var image_height = background_height/5;
@@ -75,6 +87,8 @@ var define_parameters = function(exp_stage){
   var image_y_vec =  [h/2 - image_height/2 - background_height/3,
                       h/2 - image_height/2,
                       h/2 - image_height/2 + background_height/3];
+
+
 
   //var outcome_images = [o1_image, o2_image, safe_image];
   //var outcome_vals = [o1_val, o2_val, safe_val];
@@ -86,9 +100,31 @@ var define_parameters = function(exp_stage){
   var img_bkg_color =  good_color_vec[2];
 
   var img_bkg_x = w/2 - img_bkg_width/2;
+
+
+  var image_y2_vec =  [h/2 - image_height/2 - .85*image_height,
+                        h/2 - image_height/2 + .85*image_height,
+                        h/2 - image_height/2];
+
   var img_bkg_y_vec = [image_y_vec[0] + image_height/2 - img_bkg_height/2,
                       image_y_vec[1] + image_height/2 - img_bkg_height/2,
                       image_y_vec[2] + image_height/2 - img_bkg_height/2];
+
+  var img_bkg_y2_vec = [image_y2_vec[0] + image_height/2 - img_bkg_height/2,
+                                          image_y2_vec[1] + image_height/2 - img_bkg_height/2,
+                                          image_y2_vec[2] + image_height/2 - img_bkg_height/2];
+
+
+  var img_bkg_width2 = 9*background_width/20;
+  var img_bkg_height2 = 2*background_height/7;
+
+  var img_bkg_x2_vec = [stg_bkg_x + background_width/40,
+                        stg_bkg_x + background_width/40,
+                        stg_bkg_x + 39*background_width/40 - img_bkg_width2];
+
+  var image_x2_vec = [img_bkg_x2_vec[0] + img_bkg_width2/4 - image_width/2,
+                            img_bkg_x2_vec[1]+ img_bkg_width2/4- image_width/2,
+                            img_bkg_x2_vec[2]+ img_bkg_width2/4 - image_width/2];
 
 
   var text_color = "yellow";
@@ -97,6 +133,15 @@ var define_parameters = function(exp_stage){
   var text_y_vec = [image_y_vec[0] + image_height/2 + text_font_size/2,
                     image_y_vec[1] + image_height/2 + text_font_size/2,
                     image_y_vec[2] + image_height/2 + text_font_size/2];
+
+
+  var text_y2_vec = [image_y2_vec[0] + image_height/2 + text_font_size/2,
+                                      image_y2_vec[1] + image_height/2 + text_font_size/2,
+                                      image_y2_vec[2] + image_height/2 + text_font_size/2];
+
+  var text_x2_vec = [img_bkg_x2_vec[0] + 3*img_bkg_width2/4 - text_font_size/4,
+                            img_bkg_x2_vec[1]+ 3*img_bkg_width2/4- text_font_size/4,
+                            img_bkg_x2_vec[2]+ 3*img_bkg_width2/4 - text_font_size/4];
 
   var slow_reply_x = w/2;
   var slow_reply_y = h/2;
@@ -151,6 +196,10 @@ var define_parameters = function(exp_stage){
 
   var ver1 = {
 
+    randomize_info:randomize_info,
+    randomize_info_y: randomize_info_y,
+    randomize_info_x: randomize_info_x,
+    info_pos: info_pos,
     pre_trial_time: pre_trial_time,
     info_fadein_time: info_fadein_time,
     info_time: info_time,
@@ -207,11 +256,19 @@ var define_parameters = function(exp_stage){
     img_bkg_width: img_bkg_width,
     img_bkg_height: img_bkg_height,
 
+    img_bkg_width2: img_bkg_width2,
+    img_bkg_height2: img_bkg_height2,
+
     img_bkg_color:  img_bkg_color,
 
     img_bkg_x: img_bkg_x,
     img_bkg_y_vec: img_bkg_y_vec,
-
+    img_bkg_x2_vec: img_bkg_x2_vec,
+    image_y2_vec: image_y2_vec,
+    img_bkg_y2_vec: img_bkg_y2_vec,
+    image_x2_vec: image_x2_vec,
+    text_y2_vec: text_y2_vec,
+    text_x2_vec: text_x2_vec,
 
     text_color: text_color,
     text_x: text_x,

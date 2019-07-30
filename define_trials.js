@@ -2,7 +2,6 @@
 
 // need to pre_generate random numbers...
 
-
 // make trial parameters
 var all_win_safe_vals = [16, 32];
 var all_loss_safe_vals = [-16, -32];
@@ -41,7 +40,7 @@ function rand_gen_rew_quiz_main(){
 
   if (Math.random() < 0.5){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
   if (Math.random() < .5){o1_val = t_val, o2_val = other_val}
-  else{o1_val = other_val, o2_val = safe_val}
+  else{o1_val = other_val, o2_val = t_val}
 
   var these_outcome_vals = [o1_val, o2_val, safe_val];
   var these_outcome_names = [thing_names[0], thing_names[1], thing_names[2]];

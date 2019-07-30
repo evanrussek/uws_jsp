@@ -72,11 +72,21 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
     var myInds = [0,1,2];
     var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
+    var stim_pos_y = 1;
+    var stim_pos_x = 1;
 
     //par = define_parameters('trial', trial.o1_image, trial.o2_image,
     //          trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);
 
     par = define_parameters(trial.exp_stage);
+
+    if (par.randomize_info_y){
+      var stim_pos_y = 1 + Math.round(Math.random());
+    }
+
+    if (par.randomize_info_x){
+      var stim_pos_x = 1 + Math.round(Math.random());
+    }
 
     par.outcome_images = [trial.o1_image, trial.o2_image, trial.safe_image];
     par.outcome_vals = [trial.o1_val, trial.o2_val, trial.safe_val];
@@ -168,7 +178,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
                     par.outcome_text_y, par.outcome_text_font_size,opacity)};
 
       // reject outcome
-      place_img(trial.safe_image, "safe", par.outcome_img_x, par.outcome_img_y,
+      place_img(trial.safe_image, "safe", par.f_outcome_img_x, par.f_outcome_img_y,
             par.f_outcome_img_width, par.f_outcome_img_height,opacity);
       if (trial.show_money_val){place_reward(trial.safe_val, "safe",
               par.outcome_text_x, par.outcome_text_y, par.outcome_text_font_size,opacity)};
@@ -189,13 +199,50 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     }
 
     var place_info = function(opacity){
+
       // place stage background
       place_stg_bkg("info_bkg",par.info_bkg_color,opacity);
-      // place every image specific background and every image on top of it
-      for (var i=0; i<3; i++){
-        place_img_bkg("info",par.img_bkg_x,par.img_bkg_y_vec[i],par.img_bkg_width,par.img_bkg_height,par.img_bkg_color,opacity);
-        place_img(par.outcome_images[par.shuffledInds[i]], "info", par.image_x, par.image_y_vec[i], par.image_width, par.image_height,opacity);
-        place_reward(par.outcome_vals[par.shuffledInds[i]], "info", par.text_x, par.text_y_vec[i], par.text_font_size,opacity);
+
+      if (par.info_pos == 1){
+
+        // place every image specific background and every image on top of it
+        for (var i=0; i<3; i++){
+          place_img_bkg("info",par.img_bkg_x,par.img_bkg_y_vec[i],par.img_bkg_width,par.img_bkg_height,par.img_bkg_color,opacity);
+          if (par.randomize_info){ // but randomize for subjects?
+            place_img(par.outcome_images[par.shuffledInds[i]], "info", par.image_x, par.image_y_vec[i], par.image_width, par.image_height,opacity);
+            place_reward(par.outcome_vals[par.shuffledInds[i]], "info", par.text_x, par.text_y_vec[i], par.text_font_size,opacity);
+          } else{
+            place_img(par.outcome_images[i], "info", par.image_x, par.image_y_vec[i], par.image_width, par.image_height,opacity);
+            place_reward(par.outcome_vals[i], "info", par.text_x, par.text_y_vec[i], par.text_font_size,opacity);
+          }
+        }
+      } else{
+        // use different posittions -
+        // place every image specific background and every image on top of it
+        if (stim_pos_y == 1){ // x/y
+          var this_pos = [0, 1];
+        } else{
+          var this_pos = [1, 0];
+        };
+
+        if (stim_pos_x == 1){
+          var this_pos_x = [0, 0, 2];
+        } else{
+           var this_pos_x = [2, 2, 0];
+        }
+
+        for (var i=0; i<2; i++){
+            place_img_bkg("info",par.img_bkg_x2_vec[this_pos_x[i]],par.img_bkg_y2_vec[i],par.img_bkg_width2,par.img_bkg_height2,par.img_bkg_color,opacity);
+          //if (par.randomize_info){ // but randomize for subjects?
+            place_img(par.outcome_images[this_pos[i]], "info", par.image_x2_vec[this_pos_x[i]], par.image_y2_vec[i], par.image_width, par.image_height,opacity);
+            place_reward(par.outcome_vals[this_pos[i]], "info", par.text_x2_vec[this_pos_x[i]], par.text_y2_vec[i], par.text_font_size,opacity);
+        }
+        var i = 2;
+        place_img_bkg("info",par.img_bkg_x2_vec[this_pos_x[i]],par.img_bkg_y2_vec[i],par.img_bkg_width2,par.img_bkg_height2,par.img_bkg_color,opacity);
+      //if (par.randomize_info){ // but randomize for subjects?
+        place_img(par.outcome_images[i], "info", par.image_x2_vec[this_pos_x[i]], par.image_y2_vec[i], par.image_width, par.image_height,opacity);
+        place_reward(par.outcome_vals[i], "info", par.text_x2_vec[this_pos_x[i]], par.text_y2_vec[i], par.text_font_size,opacity);
+
       }
     }
 
@@ -460,6 +507,8 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     d3.select('svg').remove()
 
     var trial_data = {
+      "stim_pos_y": stim_pos_y,
+      "stim_pos_x": stim_pos_x,
       "first_stage": trial.first_stage,
       "last_stage": trial.last_stage,
       "show_money_val": trial.show_money_val,

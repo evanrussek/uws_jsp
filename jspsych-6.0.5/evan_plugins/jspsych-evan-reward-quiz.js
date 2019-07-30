@@ -170,7 +170,7 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
           rt: null,
           key: null
         };
-
+        var correct = null;
 
           /// stage 4 - end trial, save data,
           var end_trial = function(){
@@ -194,10 +194,7 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
           } // end end_trial
 
 
-    // data saving
-    var trial_data = {
-      parameter_name: 'parameter value'
-    };
+
 
     // end trial
     //jsPsych.finishTrial(trial_data);
