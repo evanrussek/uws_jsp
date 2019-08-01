@@ -1,42 +1,4 @@
-var all_images = ["Stimuli/MEG_Stimuli/intermediate/In01.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In02.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In03.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In04.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In05.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In06.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In07.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In08.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In09.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In10.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In11.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In12.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In13.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In14.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In15.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In16.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In17.png",
-                    "Stimuli/MEG_Stimuli/intermediate/In18.png",
-                  ];
-
-var thing_names = ["WALLET", "SCISSORS", "SUITCASE", "KEY",
-                    "MARBLES", "BARRELL", "ZEBRA"];
-
-
-var thing_images = all_images.slice(0,7);
-
-var outcome_images = thing_images.slice(0,3);
-var outcome_names = thing_names.slice(0,3);
-
-
-
-var choice_images = thing_images.slice(3,7);
-var choice_names = thing_names.slice(3,7);
-
-var all_prob_o1 = [.2, .4, .6, .8];
-practice_trials = [];
-
-// let's start with A vs D
-
+// this produces practice round which can be added to the timeline
 
 var build_practice_trial_stg1 = function(choice_number, p_o1){
   // add a prompt ....
@@ -52,9 +14,9 @@ var build_practice_trial_stg1 = function(choice_number, p_o1){
     o1_val: 10,
     o2_val: 10, // because O2 is the trigger
     ///
-    o1_image: thing_images[0],
-    o2_image: thing_images[1],
-    safe_image: thing_images[2],
+    o1_image: outcome_images[0],
+    o2_image: outcome_images[1],
+    safe_image: outcome_images[2],
     // this depends on the proability...
     choice_image: choice_images[choice_number-1],
     data: {choice_number: choice_number, phase: 'TRAIN OBSERVE'}
@@ -73,8 +35,8 @@ var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_i
     o2_val: o2_val,
     p_o1_c1: all_prob_o1[c1_number - 1],
     p_o1_c2: all_prob_o1[c2_number - 1],
-    o1_image: thing_images[0],
-    o2_image: thing_images[1],
+    o1_image: outcome_images[0],
+    o2_image: outcome_images[1],
     c1_image: choice_images[c1_number - 1],
     c2_image: choice_images[c2_number - 1],
     choice_prompt: true,
@@ -137,13 +99,13 @@ function rand_gen_info_quiz(){
       type: 'evan-info-quiz',
       correct_image: function(){
         var data = jsPsych.data.get().last(1).values()[0];
-        return thing_images[data.outcome_reached-1];
+        return outcome_images[data.outcome_reached-1];
       },
       other_images:  function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.outcome_reached-1;
                       var cp_oi = [...outcome_images]; cp_oi.splice(rm_idx,1); return cp_oi; },
       correct_name: function(){
         var data = jsPsych.data.get().last(1).values()[0];
-        return thing_names[data.outcome_reached-1];
+        return outcome_names[data.outcome_reached-1];
       },
       other_names: function(){var data = jsPsych.data.get().last(1).values()[0]; var rm_idx = data.outcome_reached-1;
                       var cp_on = [...outcome_names]; cp_on.splice(rm_idx,1); return cp_on; },
@@ -202,8 +164,8 @@ function rand_gen_rew_quiz(){
   }
 
   var these_outcome_vals = [o1_val, o2_val];
-  var these_outcome_names = [thing_names[0], thing_names[1]];
-  var these_outcome_imgs = [thing_images[0], thing_images[1]];
+  var these_outcome_names = [outcome_names[0], outcome_names[1]];
+  var these_outcome_imgs = [outcome_images[0], outcome_images[1]];
 
   var outcome_idx = Math.round(Math.random());
   var this_outcome_val = these_outcome_vals[outcome_idx];
@@ -223,8 +185,8 @@ function rand_gen_rew_quiz(){
     o2_val: o2_val,
     p_o1_c1: all_prob_o1[1 - 1],
     p_o1_c2: all_prob_o1[2 - 1],
-    o1_image: thing_images[0],
-    o2_image: thing_images[1],
+    o1_image: outcome_images[0],
+    o2_image: outcome_images[1],
     c1_image: choice_images[1 - 1],
     c2_image: choice_images[2 - 1],
     choice_prompt: true,
@@ -348,8 +310,9 @@ var gen_two_stim_block = function(c1_number, c2_number){
 
    return practice_block
 
-}
+} // end gen two stim block
 
+// make the actual practice block!
 
 var pairs = [[1, 2], [1, 3], [1,4], [2,3], [2,4], [3,4]];
 var num_list = [0,1,2,3,4,5];
@@ -382,23 +345,3 @@ for (i = 7; i<12; i++){
   }
   practice_round = practice_round.concat(block_trials);
 }
-
-// this defines the practice round which takes about 30 minutes
-
-//var practice_14 = gen_two_stim_block(1,4);
-
-//var pt_test = practice_round;
-// var pt_test = practice_14;
-//var pt_test = [gen_rand_choice_trial(1, 4, 1)];
-
-// change choice trials to 1 vs 2...
-// add prompts...
-// monitor correct vs incorrect
-// place message for when transitioning to some choices... and between blocks... make message self paced???
-
-// make money on outcome screen larger...
-// group outcomes as the same...
-// quiz on what bandit you saw?...
-
-//var pt_test = [build_practice_trial_stg1(1, .2)];
-//var pt_test = rand_gen_rew_quiz();

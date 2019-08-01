@@ -1,21 +1,4 @@
-// helper function
-
-// need to pre_generate random numbers...
-
-// make trial parameters
-var all_win_safe_vals = [16, 32];
-var all_loss_safe_vals = [-16, -32];
-var all_win_amounts = [35, 51, 67, 84, 99];
-var all_loss_amounts = [-35, -51, -67, -84, -99];
-var all_prob_o1 = [.2, .4, .6, .8];
-
-// make these choice images maybe?
-//var fractal_images = ["img/fractal_A.png",
-//"img/fractal_B.png",
-//"img/fractal_C.png",
-//"img/fractal_D.png"
-//];
-
+// need to check these 4 sets of trials
 
 var win_o1_trig_trials = [];
 var win_o2_trig_trials = [];
@@ -23,7 +6,7 @@ var loss_o1_trig_trials = [];
 var loss_o2_trig_trials = [];
 
 
-
+// function to generate reward quiz
 
 function rand_gen_rew_quiz_main(){
 
@@ -43,8 +26,8 @@ function rand_gen_rew_quiz_main(){
   else{o1_val = other_val, o2_val = t_val}
 
   var these_outcome_vals = [o1_val, o2_val, safe_val];
-  var these_outcome_names = [thing_names[0], thing_names[1], thing_names[2]];
-  var these_outcome_imgs = [thing_images[0], thing_images[1], thing_images[2]];
+  var these_outcome_names = [outcome_names[0], outcome_names[1], outcome_names[2]];
+  var these_outcome_imgs = [outcome_images[0], outcome_images[1], outcome_images[2]];
 
 
   var outcome_idx = Math.round(2*Math.random());
@@ -82,9 +65,9 @@ function rand_gen_rew_quiz_main(){
    o1_val: o1_val, // because O1 is the trigger
    o2_val: o2_val,
    ///
-   o1_image: thing_images[0], // set per subject, using subject number -- need to counterbalance this...
-   o2_image: thing_images[1], //
-   safe_image: thing_images[2],
+   o1_image: outcome_images[0], // set per subject, using subject number -- need to counterbalance this...
+   o2_image: outcome_images[1], //
+   safe_image: outcome_images[2],
    // this depends on the proability...
    choice_image: choice_images[1] // each choice image corresponds to a probability for o1
  }
@@ -149,9 +132,9 @@ for (var tv_idx = 0; tv_idx < all_win_amounts.length; tv_idx++){
         o1_val: all_win_amounts[tv_idx] + trigger_noise, // because O1 is the trigger
         o2_val: 0 + other_noise,
         ///
-        o1_image: thing_images[0], // set per subject, using subject number -- need to counterbalance this...
-        o2_image: thing_images[1], //
-        safe_image: thing_images[2],
+        o1_image: outcome_images[0], // set per subject, using subject number -- need to counterbalance this...
+        o2_image: outcome_images[1], //
+        safe_image: outcome_images[2],
         // this depends on the proability...
         choice_image: choice_images[p_idx] // each choice image corresponds to a probability for o1
       }
@@ -196,9 +179,9 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
           o1_val: 0 + other_noise,
           o2_val: all_win_amounts[tv_idx] + trigger_noise, // because O2 is the trigger
           ///
-          o1_image: thing_images[0],
-          o2_image: thing_images[1],
-          safe_image: thing_images[2],
+          o1_image: outcome_images[0],
+          o2_image: outcome_images[1],
+          safe_image: outcome_images[2],
           // this depends on the proability...
           choice_image: choice_images[p_idx]
         }
@@ -239,9 +222,9 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
           o1_val: all_loss_amounts[tv_idx] + trigger_noise, // because O1 is the trigger
           o2_val: 0 - other_noise,
           ///
-          o1_image: thing_images[0], // set per subject, using subject number -- need to counterbalance this...
-          o2_image: thing_images[1], //
-          safe_image: thing_images[2],
+          o1_image: outcome_images[0], // set per subject, using subject number -- need to counterbalance this...
+          o2_image: outcome_images[1], //
+          safe_image: outcome_images[2],
           // this depends on the proability...
           choice_image: choice_images[p_idx] // each choice image corresponds to a probability for o1
         }
@@ -284,9 +267,9 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
           o1_val: 0 - other_noise,
           o2_val: all_loss_amounts[tv_idx] + trigger_noise, // because O2 is the trigger
           ///
-          o1_image: thing_images[0],
-          o2_image: thing_images[1],
-          safe_image: thing_images[2],
+          o1_image: outcome_images[0],
+          o2_image: outcome_images[1],
+          safe_image: outcome_images[2],
           // this depends on the proability...
           choice_image: choice_images[p_idx]
         }
@@ -320,7 +303,7 @@ for (var t = 1; t < a; t++){
   }
 }
 
-
+// add more than just half way marks - maybe 1/4 parts
 half_way_txt = build_text_trial("Great job! You're half way through this part of the task.","","",true);
 main_task.splice(main_task.length/2, 0, half_way_txt)
 test_quiz = rand_gen_rew_quiz_main();

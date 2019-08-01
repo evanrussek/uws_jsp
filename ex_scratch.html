@@ -14,34 +14,22 @@
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-two-stim-choice.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-display-text.js"></script>
     <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-reward-quiz.js"></script>
-
     <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link rel='stylesheet' type='text/css' href='default_style.css'>
-
     <link rel='stylesheet' type='text/css' href='style.css'>
     <script type="text/javascript" src="jspsych-6.0.5/d3.min.js"></script>
-
   </head>
   <body></body>
-
   <script type="text/javascript" src="evan_utils.js"></script>
-  <script>
-    // generate a random subject ID with 15 characters
-    var subject_id = jsPsych.randomization.randomID(15);
-    // pick a random condition for the subject at the start of the experiment
-    var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['conditionA', 'conditionB', 'conditionC'], 1)[0];
-  </script>
-
+  <script type="text/javascript" src="define_subj_params.js"></script>
   <script type="text/javascript" src="parameters.js"></script>
   <script type="text/javascript" src="define_practice_trials.js"></script>
   <script type="text/javascript" src="define_trials.js"></script>
-
   <script>
 
   /* */
   /* create timeline */
   var timeline = [];
-
 
   var full_screen = {
     type: 'fullscreen',
@@ -63,7 +51,7 @@ timeline = [full_screen].concat(main_task);
       jsPsych.data.get().localSave('csv','test_res.csv');
     //on_finish: saveData
   }
-  });
+});
 
 </script>
 </html>
