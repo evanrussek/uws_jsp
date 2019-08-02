@@ -4,27 +4,17 @@
   <head>
     <title>My experiment</title>
     <script src="jspsych-6.0.5/jspsych.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-html-button-response.js"></script>
-    <script src="jspsych-6.0.5/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="jspsych-6.0.5/plugins/jspsych-fullscreen.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-run-trial.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-instructions.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-info-quiz.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-two-stim-choice.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-display-text.js"></script>
-    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-reward-quiz.js"></script>
+    <script src="jspsych-6.0.5/evan_plugins/jspsych-evan-travel.js"></script>
     <link href="jspsych-6.0.5/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link rel='stylesheet' type='text/css' href='default_style.css'>
     <link rel='stylesheet' type='text/css' href='style.css'>
     <script type="text/javascript" src="jspsych-6.0.5/d3.min.js"></script>
   </head>
   <body></body>
-  <script type="text/javascript" src="evan_utils.js"></script>
-  <script type="text/javascript" src="define_subj_params.js"></script>
   <script type="text/javascript" src="parameters.js"></script>
-  <script type="text/javascript" src="define_practice_trials.js"></script>
-  <script type="text/javascript" src="define_trials.js"></script>
+  <script type="text/javascript" src="draw_stim.js"></script>
+
   <script>
 
   /* */
@@ -36,9 +26,13 @@
     fullscreen_mode: true
   };
 
+  var travel = {
+    type: 'travel'
+  }
+
 
 //timeline = [full_screen, block1_node, block2_node];
-timeline = [full_screen].concat(main_task);
+timeline = [full_screen].concat([travel]);
 //timeline = [full_screen button_trial];
 //timeline = [full_screen,inst_trial];
 //timeline = [full_screen, choice_trial, choice_trial, choice_trial, choice_trial];
