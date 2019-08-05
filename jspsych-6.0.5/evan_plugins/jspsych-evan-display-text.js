@@ -23,7 +23,7 @@ jsPsych.plugins["evan-display-text"] = (function() {
     },
     wait_for_press: {
       type: jsPsych.plugins.parameterType.BOOL,
-      default: false
+      default: true
     }
   }
 }

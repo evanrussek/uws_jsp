@@ -61,6 +61,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       exp_stage: {
         type: jsPsych.plugins.parameterType.STRING,
         default: "trial"
+      },
+      show_prompt:{
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: false
       }
     }
   }
@@ -370,6 +374,19 @@ jsPsych.plugins["evan-run-trial"] = (function() {
         .transition()
         .style("opacity",1)
         .duration(par.choice_fadein_time)
+
+
+        // do we want a prompt?
+        var bkg_y = par.h/2 + par.background_height/2;
+        //                   this should be the space between bottom and end of background
+        var txt_y = bkg_y + par.stg_bkg_y/2;
+        if (trial.show_prompt){
+          if (trial.allow_reject){
+            place_text('Press 1 to PLAY the machine or 2 to REJECT.', "choice_stim", par.w/2, txt_y, par.text_font_size/2, 1, "White")
+          } else{
+            place_text('Press 1 to PLAY the machine.', "choice_stim", par.w/2, txt_y, par.text_font_size/2, 1, "White")
+          }
+        }
 
 
       var handle_response = function(info){

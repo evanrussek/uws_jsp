@@ -48,13 +48,13 @@ var define_parameters = function(exp_stage){
 
   var parentDiv = document.body;
 
-  if (exp_stage == 'trial'){
+  //if (exp_stage == 'trial'){
     var w = parentDiv.clientWidth;
     var h = parentDiv.clientHeight;
-  } else if(exp_stage == 'instruction'){
-    var w = parentDiv.clientWidth/2;
-    var h = parentDiv.clientHeight/2;
-  }
+  //} else if(exp_stage == 'instruction'){
+  //  var w = parentDiv.clientWidth/2;
+  //  var h = parentDiv.clientHeight/2;
+  //}
 
 
   // fixation
@@ -153,7 +153,7 @@ var define_parameters = function(exp_stage){
 
   var choice_bkg_color =  good_color_vec[3];
 
-  var choice_stim_bkg_color = good_color_vec[2];
+  var choice_stim_bkg_color = good_color_vec[1];
   var choice_stim_bkg_height = 2*background_width / 3;
   var choice_stim_bkg_width = 2*background_width / 3;
   var choice_stim_bkg_x = w/2 - choice_stim_bkg_width/2;

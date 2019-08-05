@@ -1,8 +1,11 @@
 // this produces practice round which can be added to the timeline
 
-var build_practice_trial_stg1 = function(choice_number, p_o1){
+var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt){
   // add a prompt ....
-  var this_trial ={
+  if (typeof show_prompt == 'undefined'){
+    var show_prompt = false;
+  }
+  var this_trial = {
     type: 'evan-run-trial',
     stage: 'practice',
     first_stage: 2,
@@ -19,7 +22,8 @@ var build_practice_trial_stg1 = function(choice_number, p_o1){
     safe_image: outcome_images[2],
     // this depends on the proability...
     choice_image: choice_images[choice_number-1],
-    data: {choice_number: choice_number, phase: 'TRAIN OBSERVE'}
+    data: {choice_number: choice_number, phase: 'TRAIN OBSERVE'},
+    show_prompt: show_prompt
     }
 
   return this_trial;
