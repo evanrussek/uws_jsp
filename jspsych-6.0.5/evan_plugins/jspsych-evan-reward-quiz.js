@@ -13,12 +13,46 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
   plugin.info = {
     name: "evan-reward-quiz",
     parameters: {
+      outcome_image:{
+        type: jsPsych.plugins.parameterType.IMAGE, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+        default: undefined
+      },
+      outcome_name: {
+        type: jsPsych.plugins.parameterType.STRING, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
+        default: undefined
+      },
+      outcome_val: {
+        type: jsPsych.plugins.parameterType.INT,
+        default: undefined
+      },
+      other_vals: { // try this for a list...
+        type: jsPsych.plugins.parameterType.INT,
+        default: undefined
+      },
+      use_image: {
+        type: jsPsych.plugins.parameterType.INT,
+        default: undefined
+      }
     }
   }
 
   plugin.trial = function(display_element, trial) {
 
+    var handle_slow_response = function(){
+      jsPsych.pluginAPI.clearAllTimeouts();
+      place_reward('Please respond faster!', 'slow_reply', par.slow_reply_x, par.slow_reply_y, par.slow_reply_font_size, 1);
+      d3.select(".slow_reply")
+        .attr("fill", "red")
+      response.choice = "SLOW";
+      response.accept = "NA";
 
+      // kill keyboard listeners
+      if (typeof keyboardListener !== 'undefined') {
+        jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
+      }
+
+      wait_for_time(par.slow_reply_time, end_trial);
+    }
 
     var wait_for_time = function(n_msec, next_fun){
       // wait n_msec and then call next function
@@ -27,8 +61,10 @@ jsPsych.plugins["evan-reward-quiz"] = (function() {
         }, n_msec);
     } // end wait for time
 
-    par = define_parameters('trial');
 
+    var correct_response = 1;
+
+    par = define_parameters('trial');
     // place the svg.
     // create svg - stimulus background // need to define this here so other funcs can use it
     var svg = d3.select(".jspsych-content-wrapper")
