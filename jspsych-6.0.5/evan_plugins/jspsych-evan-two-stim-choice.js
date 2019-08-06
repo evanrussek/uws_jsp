@@ -58,6 +58,10 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
      correct_machine: { // coded as 1 or 2
        type: jsPsych.plugins.parameterType.INT,
        default: undefined
+   },
+   limit_time:{
+     type: jsPsych.plugins.parameterType.INT,
+     default: true
    }
   }
  }
@@ -204,7 +208,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
       //                   this should be the space between bottom and end of background
       var txt_y =  par.h  - par.stg_bkg_y/2;
       if (show_prompt){
-        place_text('Press 1 to select Left machine or 2 to select Right machine.', "choice_stim", par.w/2, txt_y, par.text_font_size/3, opacity, "White")
+        place_text('Press 1 to select LEFT  or 2 to select RIGHT.', "choice_stim", par.w/2, txt_y, par.text_font_size/3, opacity, "White")
       }
 
     }
@@ -378,6 +382,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           var chosen_class = '.cR';
           var unchosen_class = '.cL';
           response.chosen_side = 2;}
+
         else{console.log('SURPRISE');}
 
         console.log('chosen_side: ' + response.chosen_side)
@@ -401,13 +406,13 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
         if (typeof keyboardListener !== 'undefined') {
           jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
         }
-
-
       }
 
       var handle_slow_response = function(){
+
           jsPsych.pluginAPI.clearAllTimeouts();
           place_reward('Please respond faster!', 'slow_reply', par.slow_reply_x, par.slow_reply_y, par.slow_reply_font_size, 1)
+
         d3.select(".slow_reply")
           .attr("fill", "red")
 
@@ -419,7 +424,6 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
       var valid_responses = [choose_left_key, choose_right_key];
 
-
       var keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
           callback_function: handle_response,
           valid_responses: valid_responses,
@@ -428,7 +432,9 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
           allow_held_key: false
         });
 
-      wait_for_time(par.max_response_time, handle_slow_response);
+      if (trial.limit_time){
+        wait_for_time(par.max_response_time, handle_slow_response);
+      }
     } // end display choice
 
     var remove_choice = function(){

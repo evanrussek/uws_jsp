@@ -65,6 +65,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       show_prompt:{
         type: jsPsych.plugins.parameterType.BOOL,
         default: false
+      },
+      limit_time:{
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: true
       }
     }
   }
@@ -452,8 +456,9 @@ jsPsych.plugins["evan-run-trial"] = (function() {
           persist: false,
           allow_held_key: false
         });
-
-      wait_for_time(par.max_response_time, handle_slow_response);
+      if (trial.limit_time){
+        wait_for_time(par.max_response_time, handle_slow_response);
+      }
     }
 
     var remove_choice = function(){

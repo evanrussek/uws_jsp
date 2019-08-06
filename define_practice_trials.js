@@ -1,10 +1,15 @@
 // this produces practice round which can be added to the timeline
 
-var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt){
+var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt, limit_time){
   // add a prompt ....
   if (typeof show_prompt == 'undefined'){
     var show_prompt = false;
   }
+  if (typeof limit_time == 'undefined'){
+    var limit_time = true;
+  }
+
+
   var this_trial = {
     type: 'evan-run-trial',
     stage: 'practice',
@@ -23,14 +28,18 @@ var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt){
     // this depends on the proability...
     choice_image: choice_images[choice_number-1],
     data: {choice_number: choice_number, phase: 'TRAIN OBSERVE'},
-    show_prompt: show_prompt
+    show_prompt: show_prompt,
+    limit_time: limit_time
     }
 
   return this_trial;
 }
 
 // these will play out to true probabilities
-var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_im, gltype){
+var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_im, gltype,limit_time){
+  if (typeof limit_time == 'undefined'){
+    limit_time = True;
+  }
   var choice_trial = {
     type: 'evan-two-stim-choice',
     first_stage: 1,
@@ -46,7 +55,8 @@ var build_choice_trial = function(c1_number, c2_number, o1_val, o2_val, better_i
     choice_prompt: true,
     info_prompt: true,
     correct_machine: better_im,
-    data: {phase: 'TRAIN CHOICE', C1: c1_number, C2: c2_number, GLtype: gltype}
+    data: {phase: 'TRAIN CHOICE', C1: c1_number, C2: c2_number, GLtype: gltype},
+    limit_time: limit_time
   }
   return choice_trial;
 
@@ -73,21 +83,24 @@ var build_po_vec = function(n_trials, p_o1){
   return po_vec;
 }
 
-var gen_rand_choice_trial = function(c1, c2, which_better, gain){
+var gen_rand_choice_trial = function(c1, c2, which_better, gain, limit_time){
+  if (typeof limit_time == 'undefined'){
+    limit_time = true;
+  };
   // constraints: c1 < c2
   if (gain == 1){
     if (which_better == 1){
       // reward should be on 1 // c2 leads to o1 more than o1 does (confusing)
-      choice_trial = build_choice_trial(c1,c2,0,10,1, "GAIN");
+      choice_trial = build_choice_trial(c1,c2,0,10,1, "GAIN", limit_time);
     }else{
-      choice_trial = build_choice_trial(c1,c2,10,0,2, "GAIN");
+      choice_trial = build_choice_trial(c1,c2,10,0,2, "GAIN", limit_time);
     }
   } else{
     if (which_better == 1){
       // reward should be on 1
-      choice_trial = build_choice_trial(c1,c2,-10,0,1, "LOSS");
+      choice_trial = build_choice_trial(c1,c2,-10,0,1, "LOSS", limit_time);
     }else{
-      choice_trial = build_choice_trial(c1,c2,0,-10,2, "LOSS");
+      choice_trial = build_choice_trial(c1,c2,0,-10,2, "LOSS", limit_time);
     }
   }
 

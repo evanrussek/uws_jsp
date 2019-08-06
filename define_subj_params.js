@@ -12,9 +12,10 @@ var both_idx_vec = [[0,0], [0,1], [0,2],
 var choice_state_idx = both_idx_vec[cond_idx][0];
 var outcome_state_idx = both_idx_vec[cond_idx][1];
 
-var pos_outcome_assigments = [[0, 1, 2],
-                          [2, 0, 1],
-                          [1, 2, 0]];
+var pos_outcome_assigments = [[0, 1, 2], // Scissors is safe
+                          [2, 0, 1], // House is safe
+                          [1, 2, 0]]; // Girl is safe
+
 
 var pos_choice_assignments = [[0,1,2,3],
                           [3,0,1,2],
@@ -24,17 +25,17 @@ var pos_choice_assignments = [[0,1,2,3],
 var choice_idx_vec = pos_choice_assignments[choice_state_idx]
 var outcome_idx_vec = pos_outcome_assigments[outcome_state_idx];
 
-var outcome_names = ["GIRL", "HOUSE", "BANANA"];
-var choice_names = ["HAND", "PINECONE", "BUTTERFLY", "SCISSORS"];
+var pos_outcome_names = ["GIRL", "HOUSE", "SCISSORS"];
+var pos_choice_names = ["HAND", "PEPPER", "BUTTERFLY", "ZEBRA"];
 
 var pos_outcome_images = ["Stimuli/Evan_Stimuli/Girl.png",
                   "Stimuli/Evan_Stimuli/House.png",
-                  "Stimuli/Evan_Stimuli/Banana.png"];
+                  "Stimuli/Evan_Stimuli/Scissors.png"];
 
 var pos_choice_images = ["Stimuli/Evan_Stimuli/Hand.png",
-                  "Stimuli/Evan_Stimuli/Pinecone.png",
+                  "Stimuli/Evan_Stimuli/Pepper.png",
                   "Stimuli/Evan_Stimuli/Butterfly.png",
-                  "Stimuli/Evan_Stimuli/Scissors.png",
+                  "Stimuli/Evan_Stimuli/Zebra.png",
                 ];
 
 var choice_images = [pos_choice_images[choice_idx_vec[0]],
@@ -42,9 +43,20 @@ var choice_images = [pos_choice_images[choice_idx_vec[0]],
                       pos_choice_images[choice_idx_vec[2]],
                       pos_choice_images[choice_idx_vec[3]]];
 
+
+var choice_names = [pos_choice_names[choice_idx_vec[0]],
+      pos_choice_names[choice_idx_vec[1]],
+      pos_choice_names[choice_idx_vec[2]],
+      pos_choice_names[choice_idx_vec[3]]];
+
 var outcome_images = [pos_outcome_images[outcome_idx_vec[0]],
                       pos_outcome_images[outcome_idx_vec[1]],
                       pos_outcome_images[outcome_idx_vec[2]]];
+
+var outcome_names = [pos_outcome_names[outcome_idx_vec[0]],
+      pos_outcome_names[outcome_idx_vec[1]],
+      pos_outcome_names[outcome_idx_vec[2]]];
+
 
 // this is constant for all subjects
 var all_prob_o1 = [.2, .4, .6, .8];
