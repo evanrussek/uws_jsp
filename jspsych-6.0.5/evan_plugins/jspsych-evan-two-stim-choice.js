@@ -170,7 +170,7 @@ jsPsych.plugins["evan-two-stim-choice"] = (function() {
 
       // do we want a prompt?
       var bkg_y = par.h/2 - par.background_height/2;
-      //                   this should be the space between bottom and end of background
+      //  this should be the space between bottom and end of background
       var txt_y = bkg_y + (img_bkg_y_vec[0] - bkg_y)/2;
       if (show_prompt){
         place_text('Banknote point values for upcoming choice', "info", par.w/2, txt_y, par.text_font_size/2, opacity, "White")

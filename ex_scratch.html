@@ -39,22 +39,17 @@
     fullscreen_mode: true
   };
 
-
 //timeline = [full_screen, block1_node, block2_node];
-timeline = [full_screen].concat(main_task);
+//timeline = [full_screen].concat(instruc2_timeline_w_trials);
 
-timeline = instruc_timeline;
-//timeline = [full_screen button_trial];
-//timeline = [full_screen,inst_trial];
-//timeline = [full_screen, choice_trial, choice_trial, choice_trial, choice_trial];
+timeline = instruc_timeline2;
+
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,
     show_preload_progress_bar: false,
     on_finish: function() {
-      //console.log('done')
       jsPsych.data.get().localSave('csv','test_res.csv');
-    //on_finish: saveData
   }
 });
 
