@@ -383,4 +383,5 @@ main_task.splice(Math.round(main_task.length/4), 0, quart_text)
 main_task.splice(Math.round(main_task.length/2)+1, 0, half_way_txt)
 main_task.splice(Math.round(3*main_task.length/4)+2, 0, three_quart_text)
 
-test_quiz = rand_gen_rew_quiz_main();
+task2_timeline = main_task;
+//test_quiz = rand_gen_rew_quiz_main();

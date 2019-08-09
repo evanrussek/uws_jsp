@@ -362,3 +362,4 @@ for (i = 7; i<12; i++){
   }
   practice_round = practice_round.concat(block_trials);
 }
+task1_timeline = practice_round;

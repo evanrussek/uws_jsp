@@ -354,3 +354,12 @@ var loop2_node = {
 }
 instruc2_timeline_w_trials.push(loop2_node);
 var instruc_timeline2 = instruc2_timeline_w_trials;
+
+var end_screen = {
+	type: 'html-button-response',
+    timing_post_trial: 0,
+	//    button_html: '<button class="jspsych-btn" style="display:none">%choice%</button>',
+    choices: ['End Task'],
+    is_html: true,
+    stimulus: 'You have finished the task. Thank you for your contribution to science! You should receive your payment and bonus shortly.'
+}
