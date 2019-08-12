@@ -256,10 +256,10 @@ var correct1b = 2;
 var options2b =  ["1", "2", "3", "4", "5", "6", "7", "I do not know"];
 var correct2b = 3;
 
-var options3b = ["Accepting a given slot machine can lead to any of the banknotes. The chances that a given slot machine provides a given banknote are different for each slot machine.",
-                "Accepting a given slot machine can lead to either the " + outcome_names[0]  + " or the " + outcome_names[1] + "  banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
-				"Accepting a given slot machine can lead to either the " + outcome_names[1]  + " or the " + outcome_names[2] + "  banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
-				"Accepting a given slot machine can lead to either the " + outcome_names[0]  + " or the " + outcome_names[2] + "  banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
+var options3b = ["Accepting a given slot machine can lead to any of the banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
+                "Accepting a given slot machine can lead to either the " + outcome_names[0]  + " or the " + outcome_names[1] + "  banknotes. The chances that a given slot machine provides a given banknote are different for each slot machine.",
+				"Accepting a given slot machine can lead to either the " + outcome_names[1]  + " or the " + outcome_names[2] + "  banknotes. The chances that a given slot machine provides a given banknote are different for each slot machine.",
+				"Accepting a given slot machine can lead to either the " + outcome_names[0]  + " or the " + outcome_names[2] + "  banknotes. The chances that a given slot machine provides a given banknote are different for each slot machine.",
                 "Accepting some slot machines will always provide the same banknote.",
                 "I do not know"];
 var correct3b = 1;

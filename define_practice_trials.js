@@ -6,7 +6,7 @@ var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt, limit
     var show_prompt = false;
   }
   if (typeof limit_time == 'undefined'){
-    var limit_time = true;
+    var limit_time = false;
   }
 
 
@@ -85,7 +85,7 @@ var build_po_vec = function(n_trials, p_o1){
 
 var gen_rand_choice_trial = function(c1, c2, which_better, gain, limit_time){
   if (typeof limit_time == 'undefined'){
-    limit_time = true;
+    limit_time = false;
   };
   // constraints: c1 < c2
   if (gain == 1){
@@ -307,7 +307,7 @@ var gen_two_stim_block = function(c1_number, c2_number){
 
   // these are all framed in terms of approach, should we frame some in terms of avoid....
   var choice_trials = jsPsych.randomization.repeat([choice_trial_c1_better_g, choice_trial_c2_better_g,
-                                                  choice_trial_c1_better_l, choice_trial_c2_better_l],2);
+                                                  choice_trial_c1_better_l, choice_trial_c2_better_l],1);
 
   // add random reward quizes into choice_trial quizes
   var t_new1 = 0;
@@ -329,6 +329,25 @@ var gen_two_stim_block = function(c1_number, c2_number){
 
 } // end gen two stim block
 
+var make_choice_block = function(){
+  var pairs = [[1, 2], [1, 3], [1,4], [2,3], [2,4], [3,4]];
+  var num_list = [0,1,2,3,4,5];
+  var choice_block_trials = [];
+  for (better_o = 1; better_o < 3; better_o++){
+
+    for (var i = 0; i<6; i++){
+      if (Math.random() < .5){
+        var this_trial = gen_rand_choice_trial(pairs[i][0], pairs[i][1], better_o,true);
+      } else{
+        var this_trial = gen_rand_choice_trial(pairs[i][0], pairs[i][1], better_o,false);
+      }
+      choice_block_trials.push(this_trial);
+    }
+  }
+
+  choice_block_trials = jsPsych.randomization.shuffle(choice_block_trials,1);
+  return choice_block_trials;
+}
 // make the actual practice block!
 
 var pairs = [[1, 2], [1, 3], [1,4], [2,3], [2,4], [3,4]];
@@ -342,8 +361,8 @@ var part2 = jsPsych.randomization.shuffle(pairs,1);
 var parts = part1.concat(part2);
 var practice_round = [];
 
-
-for (i = 0; i<6; i++){
+// block trials...
+for (var i = 0; i<6; i++){
   var block_trials = gen_two_stim_block(pairs[shuff_list[i]][0], pairs[shuff_list[i]][1]);
   for (var tn = 0; tn < block_trials.length; tn++){
     if (block_trials[tn].data == undefined){block_trials[tn].data = {}};
@@ -352,7 +371,10 @@ for (i = 0; i<6; i++){
   }
   practice_round = practice_round.concat(block_trials);
 }
-practice_round.push(build_text_trial("Great job! You're half way through this part of the task.","","",true));
+//practice_round.push(build_text_trial("Great job! You're half way through this part of the task.","","",true));
+practice_round.push(build_text_trial("Great job! For the rest of the task, you'll just make choices between the slot machines.","","",true));
+
+/*
 for (i = 7; i<12; i++){
   var block_trials = gen_two_stim_block(pairs[shuff_list[i]][0], pairs[shuff_list[i]][1]);
   for (var tn = 0; tn < block_trials.length; tn++){
@@ -362,4 +384,15 @@ for (i = 7; i<12; i++){
   }
   practice_round = practice_round.concat(block_trials);
 }
+*/
+var n_rep_choice_block = 5; // this could also go dynamically until some criterion is hit?
+var choice_block_trials = [];
+for (var i = 0; i < n_rep_choice_block; i++){
+ choice_block_trials = choice_block_trials.concat(make_choice_block());
+}
+practice_round = practice_round.concat(choice_block_trials);
+//choice_block_trials = make_choice_block();
+//choice_block_trials = choice_block_trials.concat(make_choice_block());
+
 task1_timeline = practice_round;
+//task1_timeline = choice_block_trials;

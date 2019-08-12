@@ -23,9 +23,9 @@ var define_parameters = function(exp_stage){
     var max_response_time = 7000;
     var outcome_time = 750;
   }else{
-    var pre_trial_time = 750; // this is the ITI
+    var pre_trial_time = 800; // this is the ITI
     var info_time = 3000;
-    var post_info_time = 600;
+    var post_info_time = 800;
     var max_response_time = 5000;
     var outcome_time = 750;
  // limiting choice time here.
