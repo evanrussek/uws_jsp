@@ -59,21 +59,21 @@ var instruc1b_trials = [gen_rand_choice_trial(2, 4, 1,1,false),  gen_rand_choice
 
 // define the instruction quiz...
 var options1a =  ["It is random",
-            "Number of points collected on a randomly selected choice game.",
-            "Number of points collected on a randomly selected choice game as well as answers to attention check questions.",
+            "Number of points collected on a single randomly selected choice game.",
+            "Average number of points collected on four randomly selected choice games as well as answers to attention check questions.",
             "Just total number of points collected.",
             "Just answers to attention check questions.",
             "The total number of points collected as well as answers to attention check questions.",
             "I do not know"
         ];
-var correct1a = 5;
+var correct1a = 2;
 
-var options2a = ["Banknotes with positive point values increase the number of points in the collection by their point value. \
-                    Banknotes with negative point values do not affect your collection.",
-                    "Banknotes with positive point values increase the number of points in your collection by their point value. \
-                    Banknotes with negative point values decrease the number of points in your collection by their point value.",
-                     "Banknotes with positive point values do not affect your collection.\
-                     Banknotes with negative point values decrease the number of points in the collection by their point value.",
+var options2a = ["If collected on a selected game, banknotes with positive point values will increase the bonus. \
+                    Banknotes with negative point values will not affect the bonus.",
+                    "If collected on a selected game, banknotes with positive point values will increase the bonus. \
+                    If collected on a selected game, banknotes with negative point values will decrease the bonus.",
+                     "Banknotes with positive point values will not affect the bonus.\
+                     If collected on a selected game, banknotes with negative point values will decrease the bonus.",
                      "I do not know"];
 var correct2a = 1;
 
@@ -110,7 +110,7 @@ var instruction_check = {
     questions: [
         {prompt: "<b>Question 1</b>: What determines the bonus for this task?",
                 options: options1a, required: true},
-        {prompt: "<b>Question 2</b>: How does collecting a banknote affect your collected total number of points?",
+        {prompt: "<b>Question 2</b>: How does collecting positive point and negative point banknotes affect your bonus?",
                     options: options2a, required: true},
         {prompt: "<b>Question 3</b>: How many banknotes are in this task?",
                     options: options3a, required: true},
@@ -235,13 +235,13 @@ var instruction_pages2c = {
 // want some practice trials where the person just reports the point value of one of the bank notes.
 
 instruc2_timeline_w_trials.push(instruction_pages2a);
-var n_info_practice = 4;
+var n_info_practice = 8;
 for (i = 0; i < n_info_practice; i ++){
 	instruc2_timeline_w_trials = instruc2_timeline_w_trials.concat(rand_gen_rew_quiz_main());
 }
 
 instruc2_timeline_w_trials.push(instruction_pages2b);
-var n_trial_practice = 4;
+var n_trial_practice = 6;
 for (i = 0; i < n_trial_practice; i ++){
 	instruc2_timeline_w_trials.push(rand_gen_trial());
 }
@@ -279,12 +279,11 @@ var correct6b = 1;
 
 var options7b = ["The total number of points collected as well as answers to attention check questions.",
 				"It is random",
-				"Total points on a randomly selected trial as well as answers to attention check questions.",
+				"Average number of points collected on four randomly selected games as well as answers to attention check questions.",
 				"Just total number of points collected.",
 				"Just answers to attention check questions.",
-				"I do not know."]
-var correct7b = 0;
-
+				"I do not know."];
+var correct7b = 2;
 
 var corr2_string = '{"Q0":' + '"'+options1b[correct1b]+'",' + '"Q1":' + '"'+options2b[correct2b]+'",'
     + '"Q2":' + '"'+options3b[correct3b]+'",' + '"Q3":' + '"'+options4b[correct4b]+'",' +
@@ -355,11 +354,70 @@ var loop2_node = {
 instruc2_timeline_w_trials.push(loop2_node);
 var instruc_timeline2 = instruc2_timeline_w_trials;
 
+//-- to compute the bonus...
+const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+
+var point_vals = jsPsych.data.get().filter({phase: 'TRAIN CHOICE'}).select('points_received').values
+var practice_bonus_trial_points = jsPsych.randomization.sampleWithoutReplacement(point_vals, 4)
+practice_bonus_trial_points =  arrAvg(practice_bonus_trial_points);
+// how correct were they on check trials?
+
+// compute bonus for the main task...
 var end_screen = {
 	type: 'html-button-response',
     timing_post_trial: 0,
 	//    button_html: '<button class="jspsych-btn" style="display:none">%choice%</button>',
     choices: ['End Task'],
+/*	on_start: function(){
+		var point_vals = jsPsych.data.get().filter({phase: 'TRAIN CHOICE'}).select('points_received').values
+		practice_bonus_trial_points = jsPsych.randomization.sampleWithoutReplacement(point_vals, 4)
+		practice_bonus_trial_points_avg =  arrAvg(practice_bonus_trial_points);
+		practice_quiz_pct = jsPsych.data.get().filter({trial_type: 'evan-info-quiz'}).select('correct').mean();
+		practice_quiz_pct = 100*practice_quiz_pct;
+	}, */
     is_html: true,
-    stimulus: 'You have finished the task. Thank you for your contribution to science! You should receive your payment and bonus shortly.'
+    stimulus: function(){
+		var point_vals = jsPsych.data.get().filter({phase: 'TRAIN CHOICE'}).select('points_received').values
+		if (point_vals.length > 0){
+			var practice_bonus_trial_points = jsPsych.randomization.sampleWithoutReplacement(point_vals, 4)
+			var practice_bonus_trial_points_avg =  Math.round(arrAvg(practice_bonus_trial_points));
+			var practice_quiz_pct = jsPsych.data.get().filter({trial_type: 'evan-info-quiz'}).select('correct').mean();
+			var practice_quiz_pct = Math.round(100*practice_quiz_pct);
+		} else{
+			var practice_bonus_trial_points_avg= 0
+			var practice_quiz_pct = 0;
+		}
+
+
+		var test_point_vals = jsPsych.data.get().filterCustom(function(trial){
+											return ((trial.points_received != null) & (trial.phase == 'TEST'));
+										}).select('points_received').values
+		if (test_point_vals.length > 0){
+			var rand_test_point_vals = jsPsych.randomization.sampleWithoutReplacement(test_point_vals, 4)
+			var test_bonus_trial_points_avg =  Math.round(arrAvg(rand_test_point_vals));
+			var test_quiz_perf = jsPsych.data.get().filter({trial_type: 'evan-reward-quiz'}).select('correct').mean()
+			var test_quiz_pct = Math.round(100*test_quiz_perf);
+		}else{
+			var test_quiz_pct = 0;
+			var test_bonus_trial_points_avg = 0;
+		}
+
+		// write this data
+		var bonus_data = {
+			'practice_quiz_pct': practice_quiz_pct,
+			'practice_bonus_trial_points_avg': practice_bonus_trial_points_avg,
+			'test_quiz_pct': test_quiz_pct,
+			'test_bonus_trial_points_avg': test_bonus_trial_points_avg
+		};
+		jsPsych.data.write(bonus_data)
+
+		var string = 'You have finished the task. Thank you for your contribution to science! \
+		 			For the attention checks in the first task, you got ' + practice_quiz_pct + ' percent correct. \
+					On four randomly selected choice games from the first task the average number of points you collected was ' + practice_bonus_trial_points_avg + '. \
+					For the attention checks in the second task, you got ' + test_quiz_pct + ' percent correct. On four randomly selected games from the second task, \
+					the average number of points you collected was '  + test_bonus_trial_points_avg + '. \
+					 Your bonus will be based on these results. You should receive your payment and bonus shortly.';
+
+		return string;
+	}
 }

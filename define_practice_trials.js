@@ -3,7 +3,7 @@
 var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt, limit_time){
   // add a prompt ....
   if (typeof show_prompt == 'undefined'){
-    var show_prompt = false;
+    var show_prompt = true;
   }
   if (typeof limit_time == 'undefined'){
     var limit_time = false;
@@ -372,7 +372,7 @@ for (var i = 0; i<6; i++){
   practice_round = practice_round.concat(block_trials);
 }
 //practice_round.push(build_text_trial("Great job! You're half way through this part of the task.","","",true));
-practice_round.push(build_text_trial("Great job! For the rest of the task, you'll just make choices between the slot machines.","","",true));
+practice_round.push(build_text_trial("Great job! For the rest of this task you'll play both types of games in random orders.","","",true));
 
 /*
 for (i = 7; i<12; i++){
@@ -385,14 +385,41 @@ for (i = 7; i<12; i++){
   practice_round = practice_round.concat(block_trials);
 }
 */
+
+var practice_cx = [];
+for (var cx_number = 1; cx_number < 5; cx_number++){
+  var cx_trials_o1 = build_po_vec(10,all_prob_o1[cx_number - 1]);// build a_trials
+  for (var t = 0; t < cx_trials_o1.length; t++){
+    practice_cx.push(build_practice_trial_stg1(cx_number, cx_trials_o1[t]));
+  }
+}
+
+// shuffle these
+practice_cx = jsPsych.randomization.repeat(practice_cx, 1);
+
 var n_rep_choice_block = 5; // this could also go dynamically until some criterion is hit?
 var choice_block_trials = [];
 for (var i = 0; i < n_rep_choice_block; i++){
- choice_block_trials = choice_block_trials.concat(make_choice_block());
+  var this_choice_block = make_choice_block();
+  var this_practice_cx = practice_cx.splice(0,5);
+  this_choice_block = this_choice_block.concat(this_practice_cx);
+  this_choice_block = jsPsych.randomization.repeat(this_choice_block, 1);
+  choice_block_trials = choice_block_trials.concat(this_choice_block);
 }
+
+
 practice_round = practice_round.concat(choice_block_trials);
 //choice_block_trials = make_choice_block();
 //choice_block_trials = choice_block_trials.concat(make_choice_block());
 
-task1_timeline = practice_round;
+task1_timeline = practice_round.slice(0,45);
 //task1_timeline = choice_block_trials;
+
+ //-- to compute the bonus...
+//const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+//var point_vals = jsPsych.data.get().filter({phase: 'TRAIN CHOICE'}).select('points_received').values
+//var practice_bonus_trial_points = jsPsych.randomization.sampleWithoutReplacement(point_vals, 4)
+//practice_bonus_trial_points =  arrAvg(practice_bonus_trial_points);
+// how correct were they on check trials?
+
+//var quiz_pct = jsPsych.data.get().filter({trial_type: 'evan-info-quiz'}).select('correct').mean()

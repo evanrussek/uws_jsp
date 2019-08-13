@@ -13,7 +13,7 @@ var choice_state_idx = both_idx_vec[cond_idx][0];
 var outcome_state_idx = both_idx_vec[cond_idx][1];
 
 var pos_outcome_assigments = [[0, 1, 2], // Scissors is safe
-                          [2, 0, 1], // House is safe
+                          [2, 0, 1], // House is safe / keep this for this run...
                           [1, 2, 0]]; // Girl is safe
 
 
@@ -58,9 +58,11 @@ var outcome_names = [pos_outcome_names[outcome_idx_vec[0]],
       pos_outcome_names[outcome_idx_vec[2]]];
 
 
-// this is constant for all subjects
+// this is constant for all subjects (160 trials)
 var all_prob_o1 = [.2, .4, .6, .8];
 var all_win_safe_vals = [16, 32];
 var all_loss_safe_vals = [-16, -32];
-var all_win_amounts = [35, 51, 67, 84, 99];
-var all_loss_amounts = [-35, -51, -67, -84, -99];
+var all_win_amounts = [34, 46, 57, 68, 80];
+var all_loss_amounts = [-34, -46, -57, -68, -80];
+
+// 80 trials have equal ... ///
