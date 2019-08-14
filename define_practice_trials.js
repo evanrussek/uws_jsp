@@ -412,7 +412,7 @@ practice_round = practice_round.concat(choice_block_trials);
 //choice_block_trials = make_choice_block();
 //choice_block_trials = choice_block_trials.concat(make_choice_block());
 
-task1_timeline = practice_round.slice(0,45);
+task1_timeline = practice_round;
 //task1_timeline = choice_block_trials;
 
  //-- to compute the bonus...

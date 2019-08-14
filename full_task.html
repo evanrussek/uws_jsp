@@ -40,11 +40,22 @@
   };
 
 
+  var all_task_images = [];
+  all_task_images = all_task_images.concat(pos_outcome_images);
+  all_task_images = all_task_images.concat(pos_choice_images);
+  all_task_images = all_task_images.concat(instruction_pages_1a);
+  all_task_images = all_task_images.concat(instruction_pages_1b);
+  all_task_images = all_task_images.concat(instruction_pages_1c);
+  all_task_images = all_task_images.concat(instruction_pages_2a);
+  all_task_images = all_task_images.concat(instruction_pages_2b);
+  all_task_images = all_task_images.concat(instruction_pages_2c);
+
+
 
 // put together the full timeline
  timeline = [];
  timeline.push(full_screen);
- timeline = timeline.concat(instruc_timeline1);
+ //timeline = timeline.concat(instruc_timeline1); // put this back later!!!!
  timeline = timeline.concat(task1_timeline);
  timeline = timeline.concat(instruc_timeline2);
  timeline = timeline.concat(task2_timeline);
@@ -56,7 +67,8 @@
   /* start the experiment */
   jsPsych.init({
     timeline: timeline,
-    show_preload_progress_bar: false,
+    preload_images: all_task_images,
+    show_preload_progress_bar: true,
     on_finish: function() {
       jsPsych.data.get().localSave('csv','evan_practice_new.csv');
   }

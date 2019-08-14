@@ -20,7 +20,7 @@ var define_parameters = function(exp_stage){
     var info_time = 5000;
   //  var info_time = 10000000000;
     var post_info_time = 1000;
-    var max_response_time = 7000;
+    var max_response_time = 8000;
     var outcome_time = 750;
   }else{
     var pre_trial_time = 800; // this is the ITI
