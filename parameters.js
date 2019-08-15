@@ -4,7 +4,7 @@ var define_parameters = function(exp_stage){
 
   // maybe don't
   var randomize_info = false;
-  var randomize_info_y = true;
+  var randomize_info_y = false;
   var randomize_info_x = false;
 
   //var info_time = 5000;
@@ -16,28 +16,34 @@ var define_parameters = function(exp_stage){
   // for practice, this can go for a while...
 
   if (exp_stage == 'trial'){
-    var pre_trial_time = 1000; // this is the ITI
+    var pre_trial_time = 1200; // this is the ITI
     var info_time = 5000;
   //  var info_time = 10000000000;
     var post_info_time = 1000;
     var max_response_time = 8000;
-    var outcome_time = 750;
+    var outcome_time = 1000;
+    var post_choice_time = 750;
+    var choice_fadeout_time = 150;
+    var outcome_fadein_time = 0;
+    var outcome_fadeout_time = 150;
   }else{
-    var pre_trial_time = 800; // this is the ITI
+    // this seems good for now...
+    var pre_trial_time = 750; // this is the ITI
     var info_time = 3000;
     var post_info_time = 800;
     var max_response_time = 5000;
     var outcome_time = 750;
+    var post_choice_time = 700;
+    var choice_fadeout_time = 50;
+    var outcome_fadein_time = 0;
+    var outcome_fadeout_time = 50;
+
  // limiting choice time here.
   }
-  var choice_fadeout_time = 150;
-  var post_choice_time = 600;
-  var outcome_fadein_time = 100;
-  var outcome_fadeout_time = 150;
   var text_info_prac_time = 4000;
   var slow_reply_time = 1000;
 
-  var choice_side_fade_time = 350;
+  var choice_side_fade_time = 250;
   var quiz_pause_resp_time = 150;
   var quiz_response_time = 4000;
   var quiz_feedback_time = 350;

@@ -69,6 +69,10 @@ jsPsych.plugins["evan-run-trial"] = (function() {
       limit_time:{
         type: jsPsych.plugins.parameterType.BOOL,
         default: true
+      },
+      stim_pos_y:{
+        type: jsPsych.plugins.parameterType.INT,
+        default: 1
       }
     }
   }
@@ -80,13 +84,13 @@ jsPsych.plugins["evan-run-trial"] = (function() {
 
     var myInds = [0,1,2];
     var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
-    var stim_pos_y = 1;
+    var stim_pos_y = trial.stim_pos_y;
     var stim_pos_x = 1;
 
     //par = define_parameters('trial', trial.o1_image, trial.o2_image,
     //          trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);
 
-    par = define_parameters(trial.exp_stage);
+    var par = define_parameters(trial.exp_stage);
 
     if (par.randomize_info_y){
       var stim_pos_y = 1 + Math.round(Math.random());

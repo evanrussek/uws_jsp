@@ -12,7 +12,7 @@ var build_practice_trial_stg1 = function(choice_number, p_o1, show_prompt, limit
 
   var this_trial = {
     type: 'evan-run-trial',
-    stage: 'practice',
+    exp_stage: 'practice',
     first_stage: 2,
     last_stage:4,
     show_money_val: false,

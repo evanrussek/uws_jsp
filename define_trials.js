@@ -5,7 +5,7 @@ function rand_gen_rew_quiz_main(){
   // set each outcome reward
   //
 
-  var tv_idx  = Math.round(4*Math.random());
+  var tv_idx  = Math.round((all_win_amounts.length - 1)*Math.random());
   var safe_idx = Math.round(1*Math.random());
   var t_val = all_win_amounts[tv_idx] + -5 + Math.round(10*Math.random());
   var other_val = Math.round(8*Math.random());
@@ -168,16 +168,16 @@ var gen_test_trial = function(o1_trig, prob_trig_idx, trig_val, matched_safe, sa
   if (matched_safe){
     var safe_val_base = Math.round(prob_trig*trig_val);
     // set the noise...
-    var safe_noise = Math.round(3*Math.random() - 1.5);
-    var trigger_noise = Math.round(3*Math.random() - 1.5);
+    var safe_noise = 0// Math.round(3*Math.random() - 1.5);
+    var trigger_noise = 0//Math.round(3*Math.random() - 1.5);
     if (trig_val > 0){
-      var other_noise = Math.round(2*Math.random());
+      var other_noise = 0//Math.round(2*Math.random());
     }else{
-      var other_noise = -1*Math.round(2*Math.random());
+      var other_noise = 0//-1*Math.round(2*Math.random());
     }
   } else{
-    var safe_noise = Math.round(10*Math.random() - 5);
-    var trigger_noise = Math.round(10*Math.random() - 5);
+    var safe_noise = 0//Math.round(10*Math.random() - 5);
+    var trigger_noise = 0//Math.round(10*Math.random() - 5);
   }
 
 
@@ -244,16 +244,11 @@ var trig_val = 50;
 test_trial_o1 = gen_test_trial(o1_trig, prob_trig_idx, trig_val, matched_safe,30)
 test_trial_o2 = gen_test_trial(false, prob_trig_idx, trig_val, matched_safe,25)
 
-// this is constant for all subjects (160 trials)
-var all_prob_o1 = [.2, .4, .6, .8];
-var all_prob_trig =  [.2, .4, .6, .8];
-var all_win_safe_vals = [16, 32];
-var all_loss_safe_vals = [-16, -32];
-var all_win_amounts = [34, 46, 57, 68, 80];
-var all_loss_amounts = [-34, -46, -57, -68, -80];
 
 // this loop makes 120 trials match trials...
-var matched_trials = [];
+var win_matched_trials = [];
+var loss_matched_trials = [];
+
 var alt_idx = 0;
 for (var p_idx = 0; p_idx < all_prob_trig.length; p_idx++){
   for (var w_idx = 0; w_idx < all_win_amounts.length; w_idx++){
@@ -265,30 +260,62 @@ for (var p_idx = 0; p_idx < all_prob_trig.length; p_idx++){
     // o1_trig alternates and matched safe is true
     var alt_o1_trig = Boolean(alt_idx % 2);
     var match_w_alt = gen_test_trial(alt_o1_trig, p_idx, all_win_amounts[w_idx], true);
-    matched_trials = matched_trials.concat([match_w_o1, match_w_o2, match_w_alt]);
+    win_matched_trials = win_matched_trials.concat([match_w_o1, match_w_o2, match_w_alt]);
 
     // just make the loss one's here as well
     var match_l_o1 = gen_test_trial(true, p_idx, all_loss_amounts[w_idx], true);
     var match_l_o2 = gen_test_trial(false, p_idx, all_loss_amounts[w_idx], true);
     var match_l_alt = gen_test_trial(alt_o1_trig, p_idx, all_loss_amounts[w_idx], true);
-    matched_trials = matched_trials.concat([match_l_o1, match_l_o2, match_l_alt]);
+    loss_matched_trials = loss_matched_trials.concat([match_l_o1, match_l_o2, match_w_alt]);
   }
 }
 
 // generates 160 non-matched trials
-var non_matched_trials = []; // remake the other trials...
+var win_non_matched_trials = []; // remake the other trials...
+var loss_non_matched_trials = []; // remake the other trials...
+
 // win_o1_trig_trials
 for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
   for (var w_idx = 0; w_idx < all_win_amounts.length; w_idx++){
     for (var p_idx = 0; p_idx < all_prob_trig.length; p_idx++){
       var nm_w_o1 =  gen_test_trial(true, p_idx, all_win_amounts[w_idx], false, all_win_safe_vals[sv_idx]);
       var nm_w_o2 =  gen_test_trial(false, p_idx, all_win_amounts[w_idx], false, all_win_safe_vals[sv_idx]);
+      win_non_matched_trials = win_non_matched_trials.concat([nm_w_o1, nm_w_o2]);
 
       var nm_l_o1 =  gen_test_trial(true, p_idx, all_loss_amounts[w_idx], false, all_loss_safe_vals[sv_idx]);
       var nm_l_o2 =  gen_test_trial(false, p_idx, all_loss_amounts[w_idx], false, all_loss_safe_vals[sv_idx]);
 
-      non_matched_trials = non_matched_trials.concat([nm_w_o1, nm_w_o2, nm_l_o1, nm_l_o2]);
+      loss_non_matched_trials = loss_non_matched_trials.concat([nm_l_o1, nm_l_o2]);
     }
+  }
+}
+
+// block the position of things...
+
+all_loss_trials = loss_matched_trials.concat(loss_non_matched_trials);
+all_loss_trials = jsPsych.randomization.repeat(all_loss_trials,1);
+var block_size = all_loss_trials.length/6;
+
+all_win_trials = win_matched_trials.concat(win_non_matched_trials);
+all_win_trials = jsPsych.randomization.repeat(all_win_trials,1);
+
+var all_trials = []
+
+var loss_first = false;
+// want to counterbalance which comes first
+if (loss_first){
+  for (var i = 0; i < 6; i++){
+    all_trials.push(build_text_trial("The next set of games will all have negative points.","Collecting more of these will make your bonus smaller.","",true));
+    all_trials = all_trials.concat(all_loss_trials.splice(0,block_size));
+    all_trials.push(build_text_trial("The next set of games will all have positive points.","Collecting more of these will make your bonus larger.","",true));
+    all_trials = all_trials.concat(all_win_trials.splice(0,block_size));
+  }
+}else{
+  for (var i = 0; i < 6; i++){
+    all_trials.push(build_text_trial("The next set of games will all have positive points.","Collecting more of these will make your bonus larger.","",true));
+    all_trials = all_trials.concat(all_win_trials.splice(0,block_size));
+    all_trials.push(build_text_trial("The next set of games will all have negative points.","Collecting more of these will make your bonus smaller.","",true));
+    all_trials = all_trials.concat(all_loss_trials.splice(0,block_size));
   }
 }
 
@@ -296,13 +323,12 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
 // make the matched trials...
 // loop through trigger vals and p_os, gain, loss
 
-
 // 280 trials...
-var all_trials = matched_trials.concat(non_matched_trials);
+//var all_trials = all_win_trials;
 //var all_trials_shuff =  all_trials.slice(0,2);
 // add trial_number
 // should we be counterbalancing order in some way? // also want a few breaks maybe
-var main_task = jsPsych.randomization.repeat(all_trials, 1);
+var main_task = all_trials; //jsPsych.randomization.repeat(all_trials, 1);
 //var all_trials_shuff = all_trials;
 // insert a half way through
 

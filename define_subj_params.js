@@ -39,8 +39,7 @@ var pos_outcome_images = ["Stimuli/Evan_Stimuli/Girl.png",
 var pos_choice_images = ["Stimuli/Evan_Stimuli/Hand.png",
                   "Stimuli/Evan_Stimuli/Pepper.png",
                   "Stimuli/Evan_Stimuli/Butterfly.png",
-                  "Stimuli/Evan_Stimuli/Zebra.png",
-                ];
+                  "Stimuli/Evan_Stimuli/Zebra.png"];
 
 var choice_images = [pos_choice_images[choice_idx_vec[0]],
                       pos_choice_images[choice_idx_vec[1]],
@@ -65,11 +64,17 @@ var outcome_names = [pos_outcome_names[outcome_idx_vec[0]],
 // this is constant for all subjects (160 trials)
 var all_prob_o1 = [.2, .4, .6, .8];
 var all_prob_trig =  [.2, .4, .6, .8];
-var all_win_safe_vals = [16, 32];
-var all_loss_safe_vals = [-16, -32];
-var all_win_amounts = [34, 46, 57, 68, 80];
-var all_loss_amounts = [-34, -46, -57, -68, -80];
+var all_win_safe_vals = [20, 40];
+var all_loss_safe_vals = [-20, -40];
+var all_win_amounts = [50, 70, 90];
+var all_loss_amounts = [-50, -70, -90];
+
 
 // 120 trials have equal ... /// - do each one 3 times...
 
 jsPsych.data.addProperties({subject: subject_num, date: date, time: time});
+
+function round5(x)
+{
+    return Math.ceil(x/5)*5;
+}
