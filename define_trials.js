@@ -1,18 +1,33 @@
+function round5(x)
+{
+    return Math.ceil(x/5)*5;
+}
 
-function rand_gen_rew_quiz_main(){
+function round10(x)
+{
+    return Math.ceil(x/10)*10;
+}
+
+
+
+function rand_gen_rew_quiz_main(loss_trial){
 
   // generate a reward trial as well
   // set each outcome reward
   //
+  if (typeof loss_trial == undefined){
+    loss_trial = Math.random() < .5;
+  }
 
   var tv_idx  = Math.round((all_win_amounts.length - 1)*Math.random());
   var safe_idx = Math.round(1*Math.random());
-  var t_val = all_win_amounts[tv_idx] + -5 + Math.round(10*Math.random());
-  var other_val = Math.round(8*Math.random());
-  var safe_val = all_win_safe_vals[safe_idx] + - 5 +Math. round(10*Math.random());
-  var lure_val = -50 + Math.round(100*Math.random())
+  var t_val = all_win_amounts[tv_idx]; //+ -5 + Math.round(10*Math.random());
+  var other_val = 0; //Math.round(8*Math.random());
+  var safe_val = all_win_safe_vals[safe_idx];// + - 5 +Math. round(10*Math.random());
+  var lure_val = -50 + round10(100*Math.random())
+  if (lure_val == t_val){lure_val = lure_val + 5};
 
-  if (Math.random() < 0.5){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
+  if (loss_trial){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
   if (Math.random() < .5){o1_val = t_val, o2_val = other_val}
   else{o1_val = other_val, o2_val = t_val}
 
@@ -157,16 +172,16 @@ var gen_test_trial = function(o1_trig, prob_trig_idx, trig_val, matched_safe, sa
 
 
   if (trig_val > 0){
-    var other_noise = Math.round(5*Math.random());
+    var other_noise = 0; //Math.round(5*Math.random());
     var gl_type = 'gain';
   } else {
-      var other_noise = -1*Math.round(5*Math.random());
+      var other_noise = 0; //-1*Math.round(5*Math.random());
       var gl_type = 'loss';
   }
 
 
   if (matched_safe){
-    var safe_val_base = Math.round(prob_trig*trig_val);
+    var safe_val_base = round5(Math.round(prob_trig*trig_val));
     // set the noise...
     var safe_noise = 0// Math.round(3*Math.random() - 1.5);
     var trigger_noise = 0//Math.round(3*Math.random() - 1.5);
@@ -183,7 +198,7 @@ var gen_test_trial = function(o1_trig, prob_trig_idx, trig_val, matched_safe, sa
 
   if (o1_trig){
     // o1 is the trigger, o2 is 0
-    var o1_val_base = trig_val;
+    var o1_val_base = round5(trig_val);
     var o1_val = o1_val_base + trigger_noise;
     var o2_val_base = 0;
     var o2_val = o2_val_base + other_noise;
@@ -193,7 +208,7 @@ var gen_test_trial = function(o1_trig, prob_trig_idx, trig_val, matched_safe, sa
     // o2 is the trigger, o1 is 0
     var o1_val_base = 0;
     var o1_val = o1_val_base + other_noise;
-    var o2_val_base = trig_val;
+    var o2_val_base = round5(trig_val);
     var o2_val = o2_val_base + trigger_noise;
     var p_o1 = 1 - prob_trig;
     var choice_number = 1 + (3 - prob_trig_idx);
@@ -299,16 +314,58 @@ var block_size = all_loss_trials.length/6;
 all_win_trials = win_matched_trials.concat(win_non_matched_trials);
 all_win_trials = jsPsych.randomization.repeat(all_win_trials,1);
 
+
+
+// add random reward quizes into choice_trial quizes
+//var t_new1 = 0;
+//var a = all_win_trials.length;
+//for (var t = 1; t < a; t++){
+//  t_new1 = t_new1 + 1;
+//  if (Math.random() < 1/8){
+//    var quiz = rand_gen_rew_quiz_main();
+//    all_win_trials.splice(t_new1,0, quiz[0], quiz[1]);
+//    t_new1 = t_new1 + 1;
+//  }
+//}
+
+
 var all_trials = []
 
-var loss_first = false;
+var loss_first = true;
 // want to counterbalance which comes first
 if (loss_first){
   for (var i = 0; i < 6; i++){
     all_trials.push(build_text_trial("The next set of games will all have negative points.","Collecting more of these will make your bonus smaller.","",true));
-    all_trials = all_trials.concat(all_loss_trials.splice(0,block_size));
+    var loss_block = all_loss_trials.splice(0,block_size);
+
+    var t_new1 = 0;
+    var a = loss_block.length;
+    for (var t = 1; t < a; t++){
+      t_new1 = t_new1 + 1;
+      if (Math.random() < 1/2){
+        var quiz = rand_gen_rew_quiz_main(true);
+        loss_block.splice(t_new1,0, quiz[0], quiz[1]);
+        t_new1 = t_new1 + 1;
+      }
+    }
+
+    all_trials = all_trials.concat(loss_block);
+    //////////////////////////////////////////////////////////////////
     all_trials.push(build_text_trial("The next set of games will all have positive points.","Collecting more of these will make your bonus larger.","",true));
-    all_trials = all_trials.concat(all_win_trials.splice(0,block_size));
+    var win_block = all_loss_trials.splice(0,block_size);
+
+    var t_new1 = 0;
+    var a = win_block.length;
+    for (var t = 1; t < a; t++){
+      t_new1 = t_new1 + 1;
+      if (Math.random() < 1/2){
+        var quiz = rand_gen_rew_quiz_main(false);
+        win_block.splice(t_new1,0, quiz[0], quiz[1]);
+        t_new1 = t_new1 + 1;
+      }
+    }
+
+    all_trials = all_trials.concat(win_block);
   }
 }else{
   for (var i = 0; i < 6; i++){
@@ -333,21 +390,24 @@ var main_task = all_trials; //jsPsych.randomization.repeat(all_trials, 1);
 // insert a half way through
 
 for (var tn = 0; tn < main_task.length; tn++){
+  console.log(tn);
   var b = tn;
-  main_task[tn].data.trial_num = b+1;
+  if (main_task[tn].type == "evan-run-trial"){
+    main_task[tn].data.trial_num = b+1;
+  }
 }
 
 // add random reward quizes into choice_trial quizes
-var t_new1 = 0;
-var a = main_task.length;
-for (var t = 1; t < a; t++){
-  t_new1 = t_new1 + 1;
-  if (Math.random() < 1/8){
-    var quiz = rand_gen_rew_quiz_main();
-    main_task.splice(t_new1,0, quiz[0], quiz[1]);
-    t_new1 = t_new1 + 1;
-  }
-}
+//var t_new1 = 0;
+//var a = main_task.length;
+//for (var t = 1; t < a; t++){
+//  t_new1 = t_new1 + 1;
+//  if (Math.random() < 1/8){
+//    var quiz = rand_gen_rew_quiz_main();
+//    main_task.splice(t_new1,0, quiz[0], quiz[1]);
+//    t_new1 = t_new1 + 1;
+//  }
+//}
 
 // add more than just half way marks - maybe 1/4 parts
 quart_text = build_text_trial("Great job! You're a quarter of the way through this part of the task.","","",true);
