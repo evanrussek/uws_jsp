@@ -24,8 +24,12 @@ jsPsych.plugins["evan-display-text"] = (function() {
     wait_for_press: {
       type: jsPsych.plugins.parameterType.BOOL,
       default: true
-    }
+    },
+  wait_time: {
+    type: jsPsych.plugins.parameterType.FLOAT,
+    default: 5000
   }
+}
 }
 
   plugin.trial = function(display_element, trial) {
@@ -109,7 +113,14 @@ jsPsych.plugins["evan-display-text"] = (function() {
           allow_held_key: false
         });
     }else{
-      wait_for_time(par.text_info_prac_time,function(){ d3.select('svg').remove(); jsPsych.finishTrial(trial_data);});
+      // data saving
+      var trial_data = {
+        // add time to this...
+        line_1: trial.line_1,
+        line_2: trial.line_2,
+        line_3: trial.line_3,
+      };
+      wait_for_time(trial.wait_time,function(){ d3.select('svg').remove(); jsPsych.finishTrial(trial_data);});
     }
 
 

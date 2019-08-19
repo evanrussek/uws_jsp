@@ -84,7 +84,7 @@ var options4a = ["1", "2", "3","4","5","6","7"];
 var correct4a = 3;
 
 var options5a = ["Each slot machine can lead to any of the banknotes. The chances that a given slot machine provides a given banknote are different for each slot machine.",
-                "Each slot machine can lead to either of the banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
+                "Each slot machine can lead to any of the banknotes. The chances that a given slot machine provides a given banknote are the same for each slot machine.",
                 "Some slot machines always provide the same banknote.",
                 "I do not know"];
 var correct5a = 0;
@@ -327,6 +327,16 @@ var instruction2_check = {
 	}
 
 
+	var finish_instruc2_screen = {
+		type: 'html-button-response',
+	    timing_post_trial: 0,
+		//    button_html: '<button class="jspsych-btn" style="display:none">%choice%</button>',
+	    choices: ['Begin the second task!'],
+	    is_html: true,
+	    stimulus: 'You passed the quiz! Great work. This task will take about 45 minutes. Press the button to begin.'
+	}
+
+
 
 //instruc2_timeline_w_trials = [];
 instruc2_timeline_w_trials.push(instruction2_check);
@@ -352,6 +362,8 @@ var loop2_node = {
 	}
 }
 instruc2_timeline_w_trials.push(loop2_node);
+instruc2_timeline_w_trials.push(finish_instruc2_screen);
+
 var instruc_timeline2 = instruc2_timeline_w_trials;
 
 //-- to compute the bonus...

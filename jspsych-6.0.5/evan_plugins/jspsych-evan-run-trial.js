@@ -85,7 +85,7 @@ jsPsych.plugins["evan-run-trial"] = (function() {
     var myInds = [0,1,2];
     var shuffledInds = jsPsych.randomization.repeat(myInds, 1);
     var stim_pos_y = trial.stim_pos_y;
-    var stim_pos_x = 1;
+    var stim_pos_x = 1; /// change this?
 
     //par = define_parameters('trial', trial.o1_image, trial.o2_image,
     //          trial.safe_image, trial.o1_val, trial.o2_val, trial.safe_val);

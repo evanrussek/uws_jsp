@@ -275,11 +275,11 @@ var gen_two_stim_block = function(c1_number, c2_number){
   for (var t = 1; t < a; t++){
     t_new1 = t_new1 + 1;
     t_new2 = t_new2 + 1;
-    if (Math.random() < 0.25){
+    if (Math.random() < 1/8){
       practice_c1.splice(t_new1,0,rand_gen_info_quiz())
       t_new1 = t_new1 + 1;
     }
-    if (Math.random() < 0.25){
+    if (Math.random() < 1/8){
       practice_c2.splice(t_new2,0,rand_gen_info_quiz())
       t_new2 = t_new2 + 1;
     }
@@ -386,33 +386,51 @@ for (i = 7; i<12; i++){
 }
 */
 
+// each one 20 times in sets of 5?
+c_numb_shuff = jsPsych.randomization.repeat([1,2,3,4],1 );
+c_numb_shuff = c_numb_shuff.concat(jsPsych.randomization.repeat([1,2,3,4],1));
+c_numb_shuff = c_numb_shuff.concat(jsPsych.randomization.repeat([1,2,3,4],1));
+c_numb_shuff = c_numb_shuff.concat(jsPsych.randomization.repeat([1,2,3,4],1));
+
 var practice_cx = [];
-for (var cx_number = 1; cx_number < 5; cx_number++){
-  var cx_trials_o1 = build_po_vec(10,all_prob_o1[cx_number - 1]);// build a_trials
+for (var cx_idx = 0; cx_idx < c_numb_shuff.length; cx_idx++){
+  var cx_number = c_numb_shuff[cx_idx];
+  var cx_trials_o1 = build_po_vec(5,all_prob_o1[cx_number - 1]);// build a_trials
+  var cx_trials_o1 = jsPsych.randomization.repeat(cx_trials_o1,1);
   for (var t = 0; t < cx_trials_o1.length; t++){
     practice_cx.push(build_practice_trial_stg1(cx_number, cx_trials_o1[t]));
   }
 }
+// practice_cx should be 5*4*4 = 80 trials...... 20 sets of 5
+// console.log(practice_cx);
 
 // shuffle these
-practice_cx = jsPsych.randomization.repeat(practice_cx, 1);
+// practice_cx = jsPsych.randomization.repeat(practice_cx, 1);
 
 var n_rep_choice_block = 5; // this could also go dynamically until some criterion is hit?
 var choice_block_trials = [];
 for (var i = 0; i < n_rep_choice_block; i++){
   var this_choice_block = make_choice_block();
-  var this_practice_cx = practice_cx.splice(0,5);
-  this_choice_block = this_choice_block.concat(this_practice_cx);
-  this_choice_block = jsPsych.randomization.repeat(this_choice_block, 1);
+   this_choice_block = jsPsych.randomization.repeat(this_choice_block, 1);
   choice_block_trials = choice_block_trials.concat(this_choice_block);
 }
 
+// choice_block_trials should be 5x12 = 60 - so we'll do 3 then 5 then 3 etc.
+var practice_round2 = [];
+while(choice_block_trials.length > 0){
+  practice_round2 = practice_round2.concat(practice_cx.splice(0,5));
+  practice_round2 = practice_round2.concat(choice_block_trials.splice(0,3));
+}
 
-practice_round = practice_round.concat(choice_block_trials);
+///var this_practice_cx = jsPsych.randomization.repeat(practice_cx.splice(0,5));
+
+practice_round = practice_round.concat(practice_round2);
 //choice_block_trials = make_choice_block();
 //choice_block_trials = choice_block_trials.concat(make_choice_block());
 
+// figure out how long this will take.
 task1_timeline = practice_round;
+//practice_round2;//practice_round;
 //task1_timeline = choice_block_trials;
 
  //-- to compute the bonus...

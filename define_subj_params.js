@@ -2,8 +2,9 @@
 
 // mememee
 var subject_num = 1; // need to get this from JSPSYCH
-var date = 'aug_14_2019';
-var time = '1651';
+var date = 'aug_19_2019';
+var time = '1716';
+var loss_first = false;
 
 var cond_idx = subject_num%12;
 
@@ -73,8 +74,3 @@ var all_loss_amounts = [-50, -70, -90];
 // 120 trials have equal ... /// - do each one 3 times...
 
 jsPsych.data.addProperties({subject: subject_num, date: date, time: time});
-
-function round5(x)
-{
-    return Math.ceil(x/5)*5;
-}

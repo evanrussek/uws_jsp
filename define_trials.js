@@ -26,6 +26,7 @@ function rand_gen_rew_quiz_main(loss_trial){
   var safe_val = all_win_safe_vals[safe_idx];// + - 5 +Math. round(10*Math.random());
   var lure_val = -50 + round10(100*Math.random())
   if (lure_val == t_val){lure_val = lure_val + 5};
+  if (lure_val == safe_val){lure_val = lure_val + 5};
 
   if (loss_trial){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
   if (Math.random() < .5){o1_val = t_val, o2_val = other_val}
@@ -93,20 +94,28 @@ function rand_gen_rew_quiz_main(loss_trial){
 
 
 
-function rand_gen_trial(){
+function rand_gen_trial(loss_trial){
 
   // generate a reward trial as well
   // set each outcome reward
   //
 
-  var tv_idx  = Math.round(4*Math.random());
-  var safe_idx = Math.round(1*Math.random());
-  var t_val = all_win_amounts[tv_idx] + -5 + Math.round(10*Math.random());
-  var other_val = Math.round(8*Math.random());
-  var safe_val = all_win_safe_vals[safe_idx] + - 5 +Math. round(10*Math.random());
-  var lure_val = -50 + Math.round(100*Math.random())
+  // generate a reward trial as well
+  // set each outcome reward
+  //
+  if (typeof loss_trial == undefined){
+    loss_trial = Math.random() < .5;
+  }
 
-  if (Math.random() < 0.5){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
+  var tv_idx  = Math.round((all_win_amounts.length - 1)*Math.random());
+  var safe_idx = Math.round(1*Math.random());
+  var t_val = all_win_amounts[tv_idx]; //+ -5 + Math.round(10*Math.random());
+  var other_val = 0; //Math.round(8*Math.random());
+  var safe_val = all_win_safe_vals[safe_idx];// + - 5 +Math. round(10*Math.random());
+  var lure_val = -50 + round10(100*Math.random())
+  if (lure_val == t_val){lure_val = lure_val + 5};
+
+  if (loss_trial){t_val = -1*t_val; safe_val = -1*safe_val; other_val = -1*other_val};
   if (Math.random() < .5){o1_val = t_val, o2_val = other_val}
   else{o1_val = other_val, o2_val = t_val}
 
@@ -123,10 +132,8 @@ function rand_gen_trial(){
   var all_other_vals = [o1_val, o2_val].concat([safe_val, lure_val]);
   all_other_vals.splice(outcome_idx,1);
 
-  var choice_number = 1 + Math.round(3*Math.random());
-
  var use_image = (Math.random() < .5);
-
+ var choice_number = 1 + Math.round(3*Math.random());
 
 
  this_trial = {
@@ -158,7 +165,8 @@ function rand_gen_trial(){
    o2_image: outcome_images[1], //
    safe_image: outcome_images[2],
    // this depends on the proability...
-   choice_image: choice_images[choice_number - 1] // each choice image corresponds to a probability for o1
+   choice_image: choice_images[choice_number - 1], // each choice image corresponds to a probability for o1
+   show_prompt: true
  }
 
   return(this_trial)
@@ -256,9 +264,6 @@ var prob_trig_idx = 2;
 var matched_safe = false;
 var trig_val = 50;
 
-test_trial_o1 = gen_test_trial(o1_trig, prob_trig_idx, trig_val, matched_safe,30)
-test_trial_o2 = gen_test_trial(false, prob_trig_idx, trig_val, matched_safe,25)
-
 
 // this loop makes 120 trials match trials...
 var win_matched_trials = [];
@@ -281,7 +286,7 @@ for (var p_idx = 0; p_idx < all_prob_trig.length; p_idx++){
     var match_l_o1 = gen_test_trial(true, p_idx, all_loss_amounts[w_idx], true);
     var match_l_o2 = gen_test_trial(false, p_idx, all_loss_amounts[w_idx], true);
     var match_l_alt = gen_test_trial(alt_o1_trig, p_idx, all_loss_amounts[w_idx], true);
-    loss_matched_trials = loss_matched_trials.concat([match_l_o1, match_l_o2, match_w_alt]);
+    loss_matched_trials = loss_matched_trials.concat([match_l_o1, match_l_o2, match_l_alt]);
   }
 }
 
@@ -309,11 +314,11 @@ for (var sv_idx = 0; sv_idx < all_win_safe_vals.length; sv_idx++){
 
 all_loss_trials = loss_matched_trials.concat(loss_non_matched_trials);
 all_loss_trials = jsPsych.randomization.repeat(all_loss_trials,1);
-var block_size = all_loss_trials.length/6;
+var block_size = all_loss_trials.length/6; // form 6 blocks...
 
 all_win_trials = win_matched_trials.concat(win_non_matched_trials);
 all_win_trials = jsPsych.randomization.repeat(all_win_trials,1);
-
+// the task is 168 trials...
 
 
 // add random reward quizes into choice_trial quizes
@@ -331,48 +336,91 @@ all_win_trials = jsPsych.randomization.repeat(all_win_trials,1);
 
 var all_trials = []
 
-var loss_first = true;
+//var loss_first = true;
 // want to counterbalance which comes first
 if (loss_first){
   for (var i = 0; i < 6; i++){
     all_trials.push(build_text_trial("The next set of games will all have negative points.","Collecting more of these will make your bonus smaller.","",true));
     var loss_block = all_loss_trials.splice(0,block_size);
+    var c = Math.round(loss_block.length/2);
+    loss_block.splice(c,0,build_text_trial("Great work!.","Let's take a 5 second break.","",false))
 
     var t_new1 = 0;
     var a = loss_block.length;
     for (var t = 1; t < a; t++){
       t_new1 = t_new1 + 1;
-      if (Math.random() < 1/2){
-        var quiz = rand_gen_rew_quiz_main(true);
-        loss_block.splice(t_new1,0, quiz[0], quiz[1]);
-        t_new1 = t_new1 + 1;
+      if (Math.random() < 1/8){
+        if (loss_block[t_new1].type == "evan-run-trial"){
+          // loss ones
+          var quiz = rand_gen_rew_quiz_main(true);
+          loss_block.splice(t_new1,0, quiz[0], quiz[1]);
+          t_new1 = t_new1 + 1;
+        }
       }
     }
 
     all_trials = all_trials.concat(loss_block);
     //////////////////////////////////////////////////////////////////
     all_trials.push(build_text_trial("The next set of games will all have positive points.","Collecting more of these will make your bonus larger.","",true));
-    var win_block = all_loss_trials.splice(0,block_size);
+    var win_block = all_win_trials.splice(0,block_size);
+    var b = Math.round(win_block.length/2);
+    win_block.splice(b,0,build_text_trial("Great work!.","Let's take a 5 second break.","",false))
 
     var t_new1 = 0;
     var a = win_block.length;
     for (var t = 1; t < a; t++){
       t_new1 = t_new1 + 1;
-      if (Math.random() < 1/2){
-        var quiz = rand_gen_rew_quiz_main(false);
-        win_block.splice(t_new1,0, quiz[0], quiz[1]);
-        t_new1 = t_new1 + 1;
+      if (Math.random() < 1/8){
+        if (win_block[t_new1].type == "evan-run-trial"){
+          var quiz = rand_gen_rew_quiz_main(false);
+          win_block.splice(t_new1,0, quiz[0], quiz[1]);
+          t_new1 = t_new1 + 1;
+        }
       }
     }
-
     all_trials = all_trials.concat(win_block);
   }
 }else{
   for (var i = 0; i < 6; i++){
+    /// win
     all_trials.push(build_text_trial("The next set of games will all have positive points.","Collecting more of these will make your bonus larger.","",true));
-    all_trials = all_trials.concat(all_win_trials.splice(0,block_size));
+    var win_block = all_win_trials.splice(0,block_size);
+    var b = Math.round(win_block.length/2);
+    win_block.splice(b,0,build_text_trial("Great work!.","Let's take a 5 second break.","",false))
+
+    var t_new1 = 0;
+    var a = win_block.length;
+    for (var t = 1; t < a; t++){
+      t_new1 = t_new1 + 1;
+      if (Math.random() < 1/8){
+        if (win_block[t_new1].type == "evan-run-trial"){
+          var quiz = rand_gen_rew_quiz_main(false);
+          win_block.splice(t_new1,0, quiz[0], quiz[1]);
+          t_new1 = t_new1 + 1;
+        }
+      }
+    }
+    all_trials = all_trials.concat(win_block);
+    // loss
     all_trials.push(build_text_trial("The next set of games will all have negative points.","Collecting more of these will make your bonus smaller.","",true));
-    all_trials = all_trials.concat(all_loss_trials.splice(0,block_size));
+    var loss_block = all_loss_trials.splice(0,block_size);
+    var c = Math.round(loss_block.length/2);
+    loss_block.splice(b,0,build_text_trial("Great work!.","Let's take a 5 second break.","",false))
+
+    var t_new1 = 0;
+    var a = loss_block.length;
+    for (var t = 1; t < a; t++){
+      t_new1 = t_new1 + 1;
+      if (Math.random() < 1/8){
+        if (loss_block[t_new1].type == "evan-run-trial"){
+          var quiz = rand_gen_rew_quiz_main(true);
+          loss_block.splice(t_new1,0, quiz[0], quiz[1]);
+          t_new1 = t_new1 + 1;
+        }
+      }
+    }
+
+    all_trials = all_trials.concat(loss_block);
   }
 }
 
